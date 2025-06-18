@@ -1,0 +1,15 @@
+# A list of names to greet
+names = ["Hamed", "Sarah", "John", "Maria", "Alex"]
+
+# Greet each person
+for name in names:
+    if name == "Hamed":
+        print("Hello, Hamed! Welcome to our Pursuit Builders!")
+    else:
+        print(f"Hello, {name}! Welcome to our program!")
+    
+# Special greeting for Hamed
+if "Hamed" in names:
+    print("\nWelcome to Pursuit Builders, Hamed! We're excited to have you here!")
+
+print("\nHave a great day everyone!") 
