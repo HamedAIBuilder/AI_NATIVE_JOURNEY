@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello World</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        input, button { font-size: 1rem; margin: 10px; }
+    </style>
+</head>
+<body>
+    <h1 id="greeting">Hello, World!</h1>
+    <input type="text" id="customGreeting" placeholder="Enter your greeting...">
+    <button onclick="setGreeting()">Set Greeting</button>
+    <button onclick="changeGreeting()">Surprise Me!</button>
+
+    <script>
+        function setGreeting() {
+            const input = document.getElementById('customGreeting').value;
+            const greeting = input.trim() ? input : 'Hello, World!';
+            document.getElementById('greeting').textContent = greeting;
+        }
+
+        function changeGreeting() {
+            const greetings = [
+                'Hello, Universe!',
+                'Hi there!',
+                'Welcome!',
+                'Greetings, Earthling!',
+                'Howdy!',
+                'Bonjour, le monde!',
+                'Hola, Mundo!',
+                'Ciao, Mondo!'
+            ];
+            const randomGreeting = greetings[Math.floor(Math.random() * greetings.length)];
+            document.getElementById('greeting').textContent = randomGreeting;
+        }
+    </script>
+</body>
+</html> 
