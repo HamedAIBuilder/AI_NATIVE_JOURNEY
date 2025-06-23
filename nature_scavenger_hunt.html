@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nature Scavenger Hunt</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .game-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        canvas {
+            border: 3px solid #4CAF50;
+            border-radius: 10px;
+            background: #90EE90;
+        }
+        
+        .controls {
+            margin-top: 15px;
+            text-align: center;
+            color: #333;
+        }
+        
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            display: none;
+        }
+        
+        .game-over h2 {
+            color: #f44336;
+            margin: 0 0 15px 0;
+        }
+        
+        .game-over p {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        
+        .restart-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+        
+        .restart-btn:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-info">
+            <span id="score">Score: 0</span>
+            <span id="time">Time: 60s</span>
+        </div>
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        <div class="controls">
+            <p>Use WASD or Arrow Keys to move • Collect nature items!</p>
+        </div>
+    </div>
+    
+    <div class="game-over" id="gameOver">
+        <h2>GAME OVER!</h2>
+        <p id="finalScore">Final Score: 0</p>
+        <button class="restart-btn" onclick="restartGame()">Play Again</button>
+    </div>
+
+    <script>
+        // Game Constants
+        const SCREEN_WIDTH = 800;
+        const SCREEN_HEIGHT = 600;
+        const PLAYER_SIZE = 40;
+        const ITEM_SIZE = 30;
+        const PLAYER_SPEED = 5;
+        const GAME_DURATION_SECONDS = 60;
+
+        // Colors
+        const GREEN = '#7CFC00';
+        const WHITE = '#FFFFFF';
+        const BLUE = '#0000FF';
+        const RED = '#FF0000';
+        const YELLOW = '#FFFF00';
+        const ORANGE = '#FFA500';
+        const PURPLE = '#800080';
+        const BLACK = '#000000';
+
+        // Nature item types
+        const NATURE_ITEM_TYPES = {
+            "leaf": { color: '#228B22', shape: "rect" },
+            "flower": { color: '#FF00FF', shape: "circle" },
+            "rock": { color: '#A9A9A9', shape: "rect" },
+            "feather": { color: '#FFFACD', shape: "circle" }
+        };
+
+        // Game variables
+        let canvas, ctx;
+        let player = {
+            x: SCREEN_WIDTH / 2 - PLAYER_SIZE / 2,
+            y: SCREEN_HEIGHT / 2 - PLAYER_SIZE / 2,
+            dx: 0,
+            dy: 0
+        };
+        let itemsOnScreen = [];
+        let score = 0;
+        let gameStartTime = Date.now();
+        let gameOver = false;
+        let keys = {};
+
+        // Initialize game
+        function init() {
+            canvas = document.getElementById('gameCanvas');
+            ctx = canvas.getContext('2d');
+            
+            // Populate initial items
+            for (let i = 0; i < 5; i++) {
+                createNewItem();
+            }
+            
+            // Start game loop
+            gameLoop();
+        }
+
+        function createNewItem() {
+            const itemTypes = Object.keys(NATURE_ITEM_TYPES);
+            const itemTypeName = itemTypes[Math.floor(Math.random() * itemTypes.length)];
+            const itemProps = NATURE_ITEM_TYPES[itemTypeName];
+            
+            const x = Math.random() * (SCREEN_WIDTH - ITEM_SIZE);
+            const y = Math.random() * (SCREEN_HEIGHT - ITEM_SIZE);
+            
+            itemsOnScreen.push({
+                type: itemTypeName,
+                x: x,
+                y: y,
+                color: itemProps.color,
+                shape: itemProps.shape
+            });
+        }
+
+        function drawPlayer() {
+            ctx.fillStyle = BLUE;
+            ctx.fillRect(player.x, player.y, PLAYER_SIZE, PLAYER_SIZE);
+            
+            // Draw eye
+            ctx.fillStyle = WHITE;
+            ctx.beginPath();
+            ctx.arc(player.x + PLAYER_SIZE * 0.75, player.y + PLAYER_SIZE * 0.25, 5, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            ctx.fillStyle = BLACK;
+            ctx.beginPath();
+            ctx.arc(player.x + PLAYER_SIZE * 0.75, player.y + PLAYER_SIZE * 0.25, 2, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+
+        function drawItem(item) {
+            ctx.fillStyle = item.color;
+            
+            if (item.shape === "rect") {
+                ctx.fillRect(item.x, item.y, ITEM_SIZE, ITEM_SIZE);
+            } else if (item.shape === "circle") {
+                ctx.beginPath();
+                ctx.arc(item.x + ITEM_SIZE / 2, item.y + ITEM_SIZE / 2, ITEM_SIZE / 2, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+        }
+
+        function updateGame() {
+            if (gameOver) return;
+
+            // Update player position
+            player.x += player.dx;
+            player.y += player.dy;
+
+            // Keep player within screen bounds
+            player.x = Math.max(0, Math.min(player.x, SCREEN_WIDTH - PLAYER_SIZE));
+            player.y = Math.max(0, Math.min(player.y, SCREEN_HEIGHT - PLAYER_SIZE));
+
+            // Check for collisions with items
+            const itemsCollected = [];
+            for (let item of itemsOnScreen) {
+                if (player.x < item.x + ITEM_SIZE &&
+                    player.x + PLAYER_SIZE > item.x &&
+                    player.y < item.y + ITEM_SIZE &&
+                    player.y + PLAYER_SIZE > item.y) {
+                    score++;
+                    itemsCollected.push(item);
+                    createNewItem();
+                }
+            }
+
+            // Remove collected items
+            for (let item of itemsCollected) {
+                const index = itemsOnScreen.indexOf(item);
+                if (index > -1) {
+                    itemsOnScreen.splice(index, 1);
+                }
+            }
+
+            // Update time
+            const elapsedTime = (Date.now() - gameStartTime) / 1000;
+            const remainingTime = Math.max(0, GAME_DURATION_SECONDS - Math.floor(elapsedTime));
+
+            if (remainingTime <= 0) {
+                gameOver = true;
+                showGameOver();
+            }
+
+            // Update UI
+            document.getElementById('score').textContent = `Score: ${score}`;
+            document.getElementById('time').textContent = `Time: ${remainingTime}s`;
+        }
+
+        function draw() {
+            // Clear canvas
+            ctx.fillStyle = GREEN;
+            ctx.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+            // Draw items
+            for (let item of itemsOnScreen) {
+                drawItem(item);
+            }
+
+            // Draw player
+            drawPlayer();
+        }
+
+        function gameLoop() {
+            updateGame();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        function showGameOver() {
+            document.getElementById('finalScore').textContent = `Final Score: ${score}`;
+            document.getElementById('gameOver').style.display = 'block';
+        }
+
+        function restartGame() {
+            player.x = SCREEN_WIDTH / 2 - PLAYER_SIZE / 2;
+            player.y = SCREEN_HEIGHT / 2 - PLAYER_SIZE / 2;
+            player.dx = 0;
+            player.dy = 0;
+            itemsOnScreen = [];
+            score = 0;
+            gameStartTime = Date.now();
+            gameOver = false;
+            
+            // Hide game over screen
+            document.getElementById('gameOver').style.display = 'none';
+            
+            // Populate initial items
+            for (let i = 0; i < 5; i++) {
+                createNewItem();
+            }
+        }
+
+        // Keyboard event handlers
+        document.addEventListener('keydown', function(e) {
+            keys[e.key] = true;
+            
+            if (gameOver && e.key === 'r') {
+                restartGame();
+            }
+        });
+
+        document.addEventListener('keyup', function(e) {
+            keys[e.key] = false;
+        });
+
+        // Handle continuous movement
+        function handleInput() {
+            player.dx = 0;
+            player.dy = 0;
+            
+            if (keys['ArrowLeft'] || keys['a'] || keys['A']) player.dx = -PLAYER_SPEED;
+            if (keys['ArrowRight'] || keys['d'] || keys['D']) player.dx = PLAYER_SPEED;
+            if (keys['ArrowUp'] || keys['w'] || keys['W']) player.dy = -PLAYER_SPEED;
+            if (keys['ArrowDown'] || keys['s'] || keys['S']) player.dy = PLAYER_SPEED;
+        }
+
+        // Update input handling in game loop
+        const originalUpdateGame = updateGame;
+        updateGame = function() {
+            handleInput();
+            originalUpdateGame();
+        };
+
+        // Start the game when page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html> 
