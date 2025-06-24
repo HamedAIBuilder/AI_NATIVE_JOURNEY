@@ -1,0 +1,219 @@
+import time
+import random
+
+# --- Global Data Storage ---
+# Storing songs using a list of dictionaries
+songs_data = [
+    {
+        "id": 1,
+        "title": "Twinkle, Twinkle Little Star",
+        "lyrics": [
+            "Twinkle, twinkle, little star,",
+            "How I wonder what you are.",
+            "Up above the world so high,",
+            "Like a diamond in the sky.",
+            "Twinkle, twinkle, little star,",
+            "How I wonder what you are."
+        ]
+    },
+    {
+        "id": 2,
+        "title": "Old MacDonald Had a Farm",
+        "lyrics": [
+            "Old MacDonald had a farm,",
+            "E-I-E-I-O.",
+            "And on that farm he had a cow,",
+            "E-I-E-I-O.",
+            "With a moo-moo here,",
+            "And a moo-moo there,",
+            "Here a moo, there a moo,",
+            "Everywhere a moo-moo.",
+            "Old MacDonald had a farm,",
+            "E-I-E-I-O."
+        ]
+    },
+    {
+        "id": 3,
+        "title": "The Wheels on the Bus", # New song added!
+        "lyrics": [
+            "The wheels on the bus go round and round,",
+            "Round and round, round and round.",
+            "The wheels on the bus go round and round,",
+            "All through the town!",
+            "", # Added a blank line for a slight pause
+            "The wipers on the bus go swish, swish, swish,",
+            "Swish, swish, swish, swish, swish, swish.",
+            "The wipers on the bus go swish, swish, swish,",
+            "All through the town!"
+        ]
+    }
+]
+
+# Storing cheer messages using a list
+cheer_messages = [
+    "Yay! You're singing like a superstar! ✨",
+    "Bravo! Your voice is so clear and happy! 🌟",
+    "Amazing! Keep that wonderful music flowing! 🎶",
+    "Fantastic job, little singer! You're shining! 🌈",
+    "Hooray! That was perfect! Give yourself a big clap! 👏",
+    "Wow! You sound truly wonderful! Keep up the great work! 😊",
+    "You're a rockstar! Go, go, go! 🎸",
+    "So much fun! Your singing makes me happy! 😄",
+    "Unbelievable! What a beautiful voice! 🎤",
+    "Super duper! You're doing great! 👍"
+]
+
+# Storing user data using a list of dictionaries (for future expansion)
+users_data = [
+    {
+        "user_id": "singer_001",
+        "name": "Leo",
+        "favorite_song_id": 1,
+        "songs_sung_count": 5
+    },
+    {
+        "user_id": "singer_002",
+        "name": "Mia",
+        "favorite_song_id": 3,
+        "songs_sung_count": 8
+    }
+]
+# --- End Global Data Storage ---
+
+
+def load_song_lyrics(song_id=1):
+    """
+    Loads the lyrics for a chosen song from the global songs_data.
+
+    This function represents the 'Get Ready, Get Set, Lyrics!' step.
+    It now uses a list of dictionaries to store and retrieve song information.
+
+    Args:
+        song_id (int): The 'id' of the chosen song from the songs_data list.
+
+    Returns:
+        list: A list of strings, where each string is a lyric line for the chosen song.
+              Returns an empty list if the song_id is not found.
+    """
+    print("🌟 Getting ready for your song! 🌟")
+    time.sleep(1) # A little dramatic pause for loading
+
+    for song in songs_data:
+        if song["id"] == song_id:
+            print(f"🎶 Loaded: {song['title']}! 🎶")
+            return song["lyrics"]
+
+    print("Oops! I don't know that song yet. Let's sing Twinkle, Twinkle by default!")
+    # If song_id is not found, recursively call with default ID
+    return load_song_lyrics(1)
+
+
+def display_lyrics_with_pacing(lyrics_list, pace_seconds=2.5):
+    """
+    Displays each lyric line with a comfortable pause, simulating the 'Just Right' Pacing Pal.
+
+    This is the 'Sing-Along Display' step. It ensures words appear at a child-friendly speed.
+
+    Args:
+        lyrics_list (list): A list of strings, where each string is a lyric line.
+        pace_seconds (float): The number of seconds to pause after displaying each line.
+                              This represents the 'Just Right' Pacing Pal's fixed speed.
+    """
+    print("\n--- Let's Sing! ---")
+    print("Get ready to see the words...")
+    time.sleep(pace_seconds / 2) # Shorter pause before the first line
+
+    for i, line in enumerate(lyrics_list):
+        print(f"\n🎵 {line} 🎵")
+        # Pause for the "Just Right" Pacing Pal
+        time.sleep(pace_seconds)
+
+        # Call the cheer squad periodically, e.g., after every 2 lines
+        # Avoid cheering after blank lines or if it's the very last line
+        if line.strip() != "" and (i + 1) % 2 == 0 and i < len(lyrics_list) - 1:
+            generate_cheer()
+            time.sleep(1) # Small pause after cheer
+
+    print("\n--- Song Finished! ---")
+    print("You did a wonderful job!")
+
+
+def generate_cheer():
+    """
+    Generates a random, encouraging cheer message from the 'Happy Cheer Squad'.
+
+    This function represents the 'Hooray! You Did It!' step.
+    It now uses the global cheer_messages list for its dynamic positive reinforcement.
+    """
+    print(f"\n✨ {random.choice(cheer_messages)} ✨")
+
+
+def listen_and_learn():
+    """
+    A placeholder function for the 'Listen and Learn' (Pacing Adjustment/Feedback Loop).
+
+    For the first simple version, this function doesn't perform any actual
+    pacing adjustment or complex learning. It's a conceptual placeholder
+    for future, more advanced functionality.
+
+    In a "super fancy" later version, this is where logic could be added to:
+    - Listen to audio input (requires microphone access and audio processing libraries).
+    - Analyze the user's singing speed or rhythm.
+    - Adjust the `pace_seconds` for `display_lyrics_with_pacing` dynamically.
+    """
+    # For now, this function doesn't do anything actively.
+    # It signifies where the advanced "Pacing Adjustment" logic would go.
+    pass
+
+def add_new_user(user_id, name, favorite_song_id=None):
+    """
+    Adds a new user to the global users_data list.
+    This demonstrates managing user data.
+
+    Args:
+        user_id (str): A unique identifier for the user.
+        name (str): The name of the user.
+        favorite_song_id (int, optional): The ID of the user's favorite song. Defaults to None.
+    """
+    new_user = {
+        "user_id": user_id,
+        "name": name,
+        "favorite_song_id": favorite_song_id,
+        "songs_sung_count": 0 # New users start with 0 songs sung
+    }
+    users_data.append(new_user)
+    print(f"\nWelcome, {name}! You've been added to our Happy Voices family! 👋")
+
+
+# Example of how to use these functions together (Main Loop concept)
+if __name__ == "__main__":
+    print("Welcome to Happy Voices Sing-Along!")
+
+    # Demonstrating adding a new user
+    add_new_user("singer_003", "Zoe", 3)
+    print("Current Users:")
+    for user in users_data:
+        print(f"- {user['name']} (ID: {user['user_id']})")
+
+    print("\nChoose a song to sing today:")
+    for song in songs_data:
+        print(f"{song['id']}. {song['title']}")
+
+    try:
+        choice = int(input("Enter the song number (ID) you want to sing: "))
+    except ValueError:
+        print("That's not a number! Let's just go with Twinkle, Twinkle for now.")
+        choice = 1
+
+    # Step 1: Load the lyrics using the updated function
+    song_lyrics = load_song_lyrics(choice)
+
+    # Step 2 & 3 (integrated): Display lyrics with pacing and generate cheers
+    # Pace seconds can be adjusted here or made configurable later
+    display_lyrics_with_pacing(song_lyrics, pace_seconds=2.5)
+
+    # Step 4: The 'Listen and Learn' is implicitly handled here or as a future enhancement
+    listen_and_learn() # This function currently does nothing, as per its design
+
+    print("\nThank you for singing with Happy Voices Sing-Along! See you next time! 👋")
+
