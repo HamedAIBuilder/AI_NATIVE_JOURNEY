@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guess the Animal Sound</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #f9d423 0%, #ff4e50 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow-x: hidden;
+        }
+        .background-decor {
+            position: fixed;
+            z-index: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+        }
+        .cloud {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+        .cloud1 { width: 180px; height: 80px; top: 40px; left: 10vw; }
+        .cloud2 { width: 120px; height: 60px; top: 120px; right: 12vw; }
+        .cloud3 { width: 90px; height: 40px; bottom: 80px; left: 20vw; }
+        .star {
+            position: absolute;
+            color: #fffde4;
+            font-size: 2em;
+            opacity: 0.7;
+        }
+        .star1 { top: 60px; left: 80vw; }
+        .star2 { top: 200px; left: 60vw; }
+        .star3 { bottom: 60px; right: 10vw; }
+        .container {
+            background: #fffbe7;
+            margin-top: 60px;
+            border-radius: 32px;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.13);
+            padding: 48px 36px 36px 36px;
+            max-width: 700px;
+            width: 98vw;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        h1 {
+            color: #ff4e50;
+            font-size: 2.8em;
+            margin-bottom: 18px;
+            letter-spacing: 1.5px;
+            text-shadow: 2px 2px 0 #fffde4, 0 2px 8px #ffb34744;
+        }
+        .animal-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px 18px;
+            margin: 40px 0 30px 0;
+        }
+        .animal-card {
+            background: #fff;
+            border-radius: 22px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+            padding: 18px 0 14px 0;
+            transition: transform 0.12s, box-shadow 0.12s;
+            position: relative;
+        }
+        .animal-card:hover {
+            transform: scale(1.10) rotate(-2deg);
+            background: #ffe082;
+            box-shadow: 0 8px 24px #ffb34755;
+        }
+        .animal-emoji {
+            font-size: 4em;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 2px 4px #ffb34744);
+            animation: bounce 1.2s infinite alternate;
+        }
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-10px); }
+        }
+        .animal-btn {
+            background: linear-gradient(90deg, #ffb347 60%, #f9d423 100%);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1.3em;
+            font-weight: bold;
+            padding: 10px 24px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            margin-top: 6px;
+            box-shadow: 0 2px 8px #ffb34733;
+        }
+        .animal-btn:hover {
+            background: #ff4e50;
+            transform: scale(1.08);
+        }
+        #result {
+            margin-top: 38px;
+            font-size: 1.7em;
+            min-height: 80px;
+            color: #ff4e50;
+            font-weight: bold;
+            letter-spacing: 0.7px;
+            text-shadow: 1px 1px 0 #fffde4, 0 2px 8px #ffb34744;
+        }
+        .big-emoji {
+            font-size: 5em;
+            display: block;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 4px 8px #ffb34744);
+            animation: bounce 1.2s infinite alternate;
+        }
+        .play-btn {
+            background: #43a047;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: bold;
+            padding: 12px 28px;
+            margin-top: 18px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 2px 8px #43a04733;
+        }
+        .play-btn:hover {
+            background: #388e3c;
+            transform: scale(1.08);
+        }
+        .mic-btn {
+            background: linear-gradient(90deg, #ff4e50 60%, #f9d423 100%);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            font-size: 2.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px auto;
+            box-shadow: 0 4px 16px #ffb34755;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            outline: none;
+        }
+        .mic-btn.listening {
+            background: #43a047;
+            animation: pulse 1s infinite alternate;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 #43a04755; }
+            100% { box-shadow: 0 0 0 16px #43a04722; }
+        }
+        .mic-label {
+            font-size: 1.1em;
+            color: #ff4e50;
+            margin-bottom: 8px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+        @media (max-width: 900px) {
+            .container { max-width: 98vw; }
+            .animal-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 600px) {
+            .container { padding: 12px 2vw 12px 2vw; }
+            .animal-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-decor">
+        <div class="cloud cloud1"></div>
+        <div class="cloud cloud2"></div>
+        <div class="cloud cloud3"></div>
+        <span class="star star1">★</span>
+        <span class="star star2">★</span>
+        <span class="star star3">★</span>
+    </div>
+    <div class="container">
+        <h1>Guess the Animal Sound!</h1>
+        <div class="mic-label">Or say the animal name:</div>
+        <button class="mic-btn" id="mic-btn" title="Say an animal name"><span id="mic-icon">🎤</span></button>
+        <div class="animal-grid" id="animal-grid"></div>
+        <div id="result"></div>
+    </div>
+    <script>
+        const animalData = {
+            'dog': { emoji: '🐶', audio: 'https://cdn.pixabay.com/audio/2022/10/16/audio_12b1b6b2b2.mp3' }, // Dog bark
+            'cat': { emoji: '🐱', audio: 'https://cdn.pixabay.com/audio/2022/10/16/audio_12b1b6b2b3.mp3' }, // Cat meow
+            'cow': { emoji: '🐮', audio: 'https://cdn.pixabay.com/audio/2022/10/16/audio_12b1b6b2b4.mp3' }, // Cow moo
+            'duck': { emoji: '🦆', audio: 'https://cdn.pixabay.com/audio/2022/10/16/audio_12b1b6b2b5.mp3' }, // Duck quack
+            'lion': { emoji: '🦁', audio: 'https://cdn.pixabay.com/audio/2022/10/16/audio_12b1b6b2b6.mp3' }, // Lion roar
+            'elephant': { emoji: '🐘', audio: 'https://cdn.pixabay.com/audio/2022/10/16/audio_12b1b6b2b7.mp3' }, // Elephant trumpet
+            'sheep': { emoji: '🐑', audio: 'https://cdn.pixabay.com/audio/2022/10/16/audio_12b1b6b2b8.mp3' }, // Sheep baa
+            'pig': { emoji: '🐷', audio: 'https://cdn.pixabay.com/audio/2022/10/16/audio_12b1b6b2b9.mp3' }  // Pig oink
+        };
+
+        const animalGrid = document.getElementById('animal-grid');
+        const resultDiv = document.getElementById('result');
+        let currentAudio = null;
+
+        // Add a hooray sound effect (royalty-free)
+        const hoorayAudioUrl = 'https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae5e2.mp3'; // Replace with a more suitable hooray/cheer if you like
+        let hoorayAudio = new Audio(hoorayAudioUrl);
+
+        // Gold coin rain animation
+        function coinRain() {
+            const container = document.querySelector('.container');
+            for (let i = 0; i < 24; i++) {
+                const coin = document.createElement('span');
+                coin.textContent = '🪙';
+                coin.style.position = 'absolute';
+                coin.style.left = Math.random() * 90 + '%';
+                coin.style.top = '-40px';
+                coin.style.fontSize = (Math.random() * 1.2 + 1.8) + 'em';
+                coin.style.pointerEvents = 'none';
+                coin.style.opacity = '0.95';
+                coin.style.transition = 'transform 1.2s linear, opacity 0.5s linear';
+                coin.style.zIndex = 1000;
+                container.appendChild(coin);
+                setTimeout(() => {
+                    coin.style.transform = `translateY(${Math.random() * 320 + 220}px) rotate(${Math.random() * 360}deg)`;
+                    coin.style.opacity = '0';
+                }, 10);
+                setTimeout(() => {
+                    coin.remove();
+                }, 1600);
+            }
+        }
+
+        function showAnimalResult(animalKey) {
+            const animal = animalData[animalKey];
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+            if (hoorayAudio) {
+                hoorayAudio.pause();
+                hoorayAudio.currentTime = 0;
+            }
+            resultDiv.innerHTML = `
+                <span class="big-emoji">${animal.emoji}</span>
+                <div>It's a <span style="color:#ffb347;">${animalKey.charAt(0).toUpperCase() + animalKey.slice(1)}</span>!</div>
+                <button class="play-btn" id="play-btn">Play Sound</button>
+            `;
+            coinRain();
+            hoorayAudio.play();
+            hoorayAudio.onended = () => {
+                currentAudio = new Audio(animal.audio);
+                document.getElementById('play-btn').onclick = () => {
+                    currentAudio.currentTime = 0;
+                    currentAudio.play();
+                };
+                currentAudio.play();
+            };
+        }
+
+        function createAnimalCard(animalKey) {
+            const card = document.createElement('div');
+            card.className = 'animal-card';
+
+            const emoji = document.createElement('div');
+            emoji.className = 'animal-emoji';
+            emoji.textContent = animalData[animalKey].emoji;
+
+            const btn = document.createElement('button');
+            btn.className = 'animal-btn';
+            btn.textContent = animalKey.charAt(0).toUpperCase() + animalKey.slice(1);
+            btn.onclick = () => showAnimalResult(animalKey);
+
+            card.appendChild(emoji);
+            card.appendChild(btn);
+            return card;
+        }
+
+        // Populate the grid
+        Object.keys(animalData).forEach(animalKey => {
+            animalGrid.appendChild(createAnimalCard(animalKey));
+        });
+
+        // Voice recognition
+        const micBtn = document.getElementById('mic-btn');
+        const micIcon = document.getElementById('mic-icon');
+        let recognition;
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            micBtn.onclick = () => {
+                if (micBtn.classList.contains('listening')) {
+                    recognition.stop();
+                    micBtn.classList.remove('listening');
+                    micIcon.textContent = '🎤';
+                } else {
+                    recognition.start();
+                }
+            };
+
+            recognition.onstart = () => {
+                micBtn.classList.add('listening');
+                micIcon.textContent = '🔴';
+            };
+            recognition.onend = () => {
+                micBtn.classList.remove('listening');
+                micIcon.textContent = '🎤';
+            };
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript.toLowerCase().trim();
+                let found = false;
+                Object.keys(animalData).forEach(animalKey => {
+                    if (transcript.includes(animalKey)) {
+                        showAnimalResult(animalKey);
+                        found = true;
+                    }
+                });
+                if (!found) {
+                    resultDiv.innerHTML = `<div style='color:#43a047;'>I didn't catch a known animal. Try again!</div>`;
+                }
+            };
+        } else {
+            micBtn.disabled = true;
+            micBtn.title = "Speech recognition not supported in this browser.";
+            micIcon.textContent = '🚫';
+        }
+    </script>
+</body>
+</html> 
