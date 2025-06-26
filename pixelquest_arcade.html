@@ -1,0 +1,1749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PixelQuest Arcade</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-screen {
+            display: block;
+        }
+
+        .game-menu {
+            display: none;
+        }
+
+        .stats-display {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .user-info {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .game-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .game-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .game-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .menu-btn {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        }
+
+        .exit-btn {
+            background: linear-gradient(45deg, #ff7675, #d63031);
+        }
+
+        .input-group {
+            margin: 20px 0;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+
+        .start-btn {
+            background: linear-gradient(45deg, #00b894, #00a085);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-result {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            display: none;
+        }
+
+        .challenge-notification {
+            background: linear-gradient(45deg, #fdcb6e, #e17055);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 2px solid #ffd700;
+            display: none;
+        }
+
+        .coin-animation {
+            position: fixed;
+            font-size: 2em;
+            pointer-events: none;
+            animation: coinFall 2s linear forwards;
+            z-index: 1000;
+        }
+
+        @keyframes coinFall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Tetris Game Styles */
+        .tetris-game {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .tetris-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        #tetrisCanvas {
+            border: 3px solid #00ff88;
+            border-radius: 10px;
+            background: #000;
+        }
+
+        .tetris-controls {
+            margin-top: 15px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .tetris-score {
+            color: #00ff88;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .close-tetris {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .close-tetris:hover {
+            background: #ff3742;
+        }
+
+        /* Snake Game Styles */
+        .snake-game {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .snake-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        #snakeCanvas {
+            border: 3px solid #4CAF50;
+            border-radius: 10px;
+            background: #2E7D32;
+        }
+
+        .snake-controls {
+            margin-top: 15px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .snake-score {
+            color: #4CAF50;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .close-snake {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .close-snake:hover {
+            background: #ff3742;
+        }
+
+        /* Runner Game Styles */
+        .runner-game {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #87CEEB 0%, #98FB98 100%);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .runner-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        #runnerCanvas {
+            border: 3px solid #FF6B35;
+            border-radius: 10px;
+            background: linear-gradient(180deg, #87CEEB 0%, #98FB98 50%, #8FBC8F 100%);
+        }
+
+        .runner-controls {
+            margin-top: 15px;
+            color: #333;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .runner-score {
+            color: #FF6B35;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .close-runner {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 1001;
+        }
+
+        .close-runner:hover {
+            background: #ff3742;
+        }
+
+        .game-over-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            display: none;
+            z-index: 1002;
+        }
+
+        .restart-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+
+        .restart-btn:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div id="welcomeScreen" class="welcome-screen fade-in">
+            <h1>🎮 PixelQuest Arcade 🎮</h1>
+            <p style="font-size: 1.2em; margin-bottom: 30px;">Welcome to the ultimate gaming experience!</p>
+            
+            <div class="input-group">
+                <input type="text" id="playerName" placeholder="Enter your player name" maxlength="20">
+            </div>
+            
+            <button class="start-btn" onclick="startGame()">Start Adventure</button>
+        </div>
+
+        <!-- Game Menu -->
+        <div id="gameMenu" class="game-menu">
+            <h1>🎮 PixelQuest Arcade 🎮</h1>
+            
+            <!-- User Stats Display -->
+            <div class="stats-display">
+                <div class="user-info" id="userInfo"></div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div>Total Score</div>
+                        <div class="stat-value" id="totalScore">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div>Coins</div>
+                        <div class="stat-value" id="totalCoins">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div>Games Played</div>
+                        <div class="stat-value" id="gamesPlayed">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Buttons -->
+            <div class="game-buttons">
+                <button class="game-btn" onclick="startTetrisGame()">🎯 Tetris</button>
+                <button class="game-btn" onclick="startSnakeGame()">🐍 Snake</button>
+                <button class="game-btn" onclick="startRunnerGame()">🏃 Runner</button>
+                <button class="game-btn menu-btn" onclick="viewStats()">📊 View Stats</button>
+                <button class="game-btn menu-btn" onclick="showLeaderboard()">🏆 Leaderboard</button>
+                <button class="game-btn menu-btn" onclick="switchUser()">👤 Switch User</button>
+                <button class="game-btn menu-btn" onclick="viewAllProfiles()">👥 All Profiles</button>
+                <button class="game-btn exit-btn" onclick="exitGame()">🚪 Exit</button>
+            </div>
+
+            <!-- Profile Management -->
+            <div class="stats-display" style="margin-top: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 1.1em; font-weight: bold;">Profile Management</span>
+                    <button class="game-btn" onclick="deleteCurrentProfile()" style="background: #ff4757; font-size: 0.9em; padding: 8px 15px;">🗑️ Delete Profile</button>
+                </div>
+            </div>
+
+            <!-- Game Result Display -->
+            <div id="gameResult" class="game-result">
+                <h3>🎉 Game Complete!</h3>
+                <div id="resultContent"></div>
+            </div>
+
+            <!-- Challenge Notification -->
+            <div id="challengeNotification" class="challenge-notification">
+                <h3>🏆 Challenge Completed!</h3>
+                <div id="challengeContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tetris Game Overlay -->
+    <div id="tetrisGame" class="tetris-game">
+        <button class="close-tetris" onclick="closeTetrisGame()">✕</button>
+        <div class="tetris-container">
+            <div class="tetris-score" id="tetrisScore">Score: 0 | Lines: 0</div>
+            <canvas id="tetrisCanvas" width="300" height="600"></canvas>
+            <div class="tetris-controls">
+                <p>← → Move • ↑ Rotate • ↓ Speed Drop • Space Pause</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Snake Game Overlay -->
+    <div id="snakeGame" class="snake-game">
+        <button class="close-snake" onclick="closeSnakeGame()">✕</button>
+        <div class="snake-container">
+            <div class="snake-score" id="snakeScore">Score: 0 | Length: 1</div>
+            <canvas id="snakeCanvas" width="400" height="400"></canvas>
+            <div class="snake-controls">
+                <p>← → ↑ ↓ Arrow Keys to Move • Space Pause</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Runner Game Overlay -->
+    <div id="runnerGame" class="runner-game">
+        <button class="close-runner" onclick="closeRunnerGame()">✕</button>
+        <div class="runner-container">
+            <div class="runner-score" id="runnerScore">Score: 0 | Coins: 0 | Distance: 0m</div>
+            <canvas id="runnerCanvas" width="800" height="400"></canvas>
+            <div class="runner-controls">
+                <p>Space/Up to Jump • Down to Slide • Collect Coins • Avoid Obstacles!</p>
+            </div>
+        </div>
+        <div class="game-over-overlay" id="runnerGameOver">
+            <h2>GAME OVER!</h2>
+            <p id="runnerFinalScore">Final Score: 0</p>
+            <p id="runnerFinalCoins">Coins Collected: 0</p>
+            <p id="runnerFinalDistance">Distance: 0m</p>
+            <button class="restart-btn" onclick="restartRunnerGame()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        // User Profile Management
+        let user_profiles = []; // Holds multiple user profiles, each a dictionary
+        let currentUserIndex = -1;
+        let userProfile = {
+            name: '',
+            coins: 0,
+            totalScore: 0,
+            gamesPlayed: 0
+        };
+
+        // Daily Challenge System
+        let dailyChallenge = {
+            id: "daily_score",
+            progress: 40,
+            target: 200,
+            completed: false,
+            reward: 50
+        };
+
+        // Game Data
+        const games = {
+            tetris: { name: "Tetris", emoji: "🎯" },
+            snake: { name: "Snake", emoji: "🐍" },
+            runner: { name: "Runner", emoji: "🏃" }
+        };
+
+        // Tetris Game Variables
+        let tetrisCanvas, tetrisCtx;
+        let tetrisBoard = [];
+        let tetrisPiece = null;
+        let tetrisScore = 0;
+        let tetrisLines = 0;
+        let tetrisGameOver = false;
+        let tetrisGameLoop = null;
+        let tetrisPaused = false;
+
+        // Tetris Constants
+        const TETRIS_BOARD_WIDTH = 10;
+        const TETRIS_BOARD_HEIGHT = 20;
+        const TETRIS_BLOCK_SIZE = 30;
+
+        // Tetris Pieces
+        const TETRIS_PIECES = [
+            [[1, 1, 1, 1]], // I
+            [[1, 1], [1, 1]], // O
+            [[0, 1, 0], [1, 1, 1]], // T
+            [[0, 1, 1], [1, 1, 0]], // S
+            [[1, 1, 0], [0, 1, 1]], // Z
+            [[1, 0, 0], [1, 1, 1]], // J
+            [[0, 0, 1], [1, 1, 1]]  // L
+        ];
+
+        const TETRIS_COLORS = [
+            '#00ffff', '#ffff00', '#800080', '#00ff00', '#ff0000', '#0000ff', '#ffa500'
+        ];
+
+        // Snake Game Variables
+        let snakeCanvas, snakeCtx;
+        let snake = [];
+        let snakeFood = {};
+        let snakeDirection = 'right';
+        let snakeScore = 0;
+        let snakeGameOver = false;
+        let snakeGameLoop = null;
+        let snakePaused = false;
+
+        // Snake Constants
+        const SNAKE_GRID_SIZE = 20;
+        const SNAKE_BLOCK_SIZE = 20;
+
+        // Runner Game Variables
+        let runnerCanvas, runnerCtx;
+        let runnerPlayer = {};
+        let runnerObstacles = [];
+        let runnerCoins = [];
+        let runnerScore = 0;
+        let runnerCoinsCollected = 0;
+        let runnerDistance = 0;
+        let runnerGameOver = false;
+        let runnerGameLoop = null;
+        let runnerGravity = 0.8;
+        let runnerVelocity = 0;
+        let runnerIsJumping = false;
+        let runnerIsSliding = false;
+        let runnerGameSpeed = 5;
+        let runnerObstacleTimer = 0;
+        let runnerCoinTimer = 0;
+
+        // Runner Constants
+        const RUNNER_PLAYER_WIDTH = 40;
+        const RUNNER_PLAYER_HEIGHT = 60;
+        const RUNNER_GROUND_Y = 320;
+        const RUNNER_JUMP_POWER = -15;
+        const RUNNER_OBSTACLE_SPAWN_RATE = 120;
+        const RUNNER_COIN_SPAWN_RATE = 80;
+
+        // User Profile Functions
+        function createUserProfile(name) {
+            const newProfile = {
+                name: name,
+                coins: 0,
+                totalScore: 0,
+                gamesPlayed: 0,
+                createdAt: new Date().toISOString()
+            };
+            user_profiles.push(newProfile);
+            return user_profiles.length - 1; // Return the index of the new profile
+        }
+
+        function loadUserProfile(index) {
+            if (index >= 0 && index < user_profiles.length) {
+                currentUserIndex = index;
+                userProfile = { ...user_profiles[index] }; // Create a copy
+                return true;
+            }
+            return false;
+        }
+
+        function saveCurrentProfile() {
+            if (currentUserIndex >= 0) {
+                user_profiles[currentUserIndex] = { ...userProfile };
+                saveToDatabase(user_profiles);
+            }
+        }
+
+        function getProfileByName(name) {
+            return user_profiles.findIndex(profile => profile.name.toLowerCase() === name.toLowerCase());
+        }
+
+        function updateUserProfile(coins, score) {
+            userProfile.coins += coins;
+            userProfile.totalScore += score;
+            saveCurrentProfile();
+        }
+
+        function update_user_profile(username, coins, score) {
+            /**
+             * Adds a new user or updates an existing user's coins and score.
+             */
+            for (let user of user_profiles) {
+                if (user.name === username) {
+                    user.coins += coins;
+                    user.totalScore += score;
+                    console.log(`Updated profile for ${username}`);
+                    saveToDatabase(user_profiles);
+                    return;
+                }
+            }
+            // User not found, create new profile
+            const new_user = {
+                name: username, 
+                coins: coins, 
+                totalScore: score, 
+                gamesPlayed: 0,
+                createdAt: new Date().toISOString()
+            };
+            user_profiles.push(new_user);
+            console.log(`Added new user: ${username}`);
+            saveToDatabase(user_profiles);
+        }
+
+        function calculate_coins(score, game_type) {
+            /**
+             * Calculates coins earned based on score and game type.
+             * Different games have different coin multipliers.
+             */
+            let coin_multiplier = 1;
+            
+            switch(game_type) {
+                case 'tetris':
+                    coin_multiplier = 0.1; // 1 coin per 10 points
+                    break;
+                case 'snake':
+                    coin_multiplier = 0.1; // 1 coin per 10 points
+                    break;
+                case 'runner':
+                    coin_multiplier = 1; // 1 coin per 1 point (coins are collected directly)
+                    break;
+                default:
+                    coin_multiplier = 0.1; // Default multiplier
+            }
+            
+            return Math.floor(score * coin_multiplier);
+        }
+
+        function unlock_rewards_if_needed(username) {
+            // Example: just print for demo
+            console.log(`Checking rewards for ${username}... (this is a stub)`);
+        }
+
+        function print_leaderboard() {
+            const sorted_users = user_profiles.sort((a, b) => b.totalScore - a.totalScore);
+            console.log("Leaderboard:");
+            for (let user of sorted_users) {
+                console.log(`${user.name}: Score = ${user.totalScore}, Coins = ${user.coins}`);
+            }
+        }
+
+        function showLeaderboard() {
+            if (user_profiles.length === 0) {
+                alert('No profiles available for leaderboard.');
+                return;
+            }
+
+            const sorted_users = user_profiles.sort((a, b) => b.totalScore - a.totalScore);
+            let leaderboardText = "🏆 LEADERBOARD 🏆\n\n";
+            
+            sorted_users.forEach((user, index) => {
+                const rank = index + 1;
+                const medal = rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : `${rank}.`;
+                leaderboardText += `${medal} ${user.name}\n`;
+                leaderboardText += `   Score: ${user.totalScore} | Coins: ${user.coins} | Games: ${user.gamesPlayed}\n\n`;
+            });
+
+            alert(leaderboardText);
+        }
+
+        function end_game_session(username, game_type, score) {
+            /**
+             * Ends a game session, calculates coins, updates profile, and checks for rewards.
+             */
+            const coins_earned = calculate_coins(score, game_type);
+            update_user_profile(username, coins_earned, score);
+            unlock_rewards_if_needed(username);
+            
+            console.log(`Game session ended for ${username}: ${game_type} - Score: ${score}, Coins: ${coins_earned}`);
+        }
+
+        function saveToDatabase(data) {
+            // Placeholder: Replace with actual DB or file save
+            console.log("Saving user profiles:", data);
+            // In a real implementation, you might use localStorage or a backend API
+            localStorage.setItem('pixelquest_profiles', JSON.stringify(data));
+        }
+
+        function loadFromDatabase() {
+            // Placeholder: Replace with actual DB or file load
+            const saved = localStorage.getItem('pixelquest_profiles');
+            if (saved) {
+                user_profiles = JSON.parse(saved);
+                console.log("Loaded user profiles:", user_profiles);
+            }
+        }
+
+        function startGame() {
+            const playerName = document.getElementById('playerName').value.trim();
+            if (!playerName) {
+                alert('Please enter your player name!');
+                return;
+            }
+
+            // Check if user already exists
+            let profileIndex = getProfileByName(playerName);
+            
+            if (profileIndex === -1) {
+                // Create new profile
+                profileIndex = createUserProfile(playerName);
+                alert(`Welcome to PixelQuest Arcade, ${playerName}! Your profile has been created.`);
+            } else {
+                // Load existing profile
+                loadUserProfile(profileIndex);
+                alert(`Welcome back, ${playerName}! Loading your profile...`);
+            }
+
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('gameMenu').style.display = 'block';
+            updateDisplay();
+        }
+
+        function startTetrisGame() {
+            document.getElementById('tetrisGame').style.display = 'flex';
+            initTetris();
+        }
+
+        function closeTetrisGame() {
+            document.getElementById('tetrisGame').style.display = 'none';
+            if (tetrisGameLoop) {
+                clearInterval(tetrisGameLoop);
+                tetrisGameLoop = null;
+            }
+        }
+
+        function startSnakeGame() {
+            document.getElementById('snakeGame').style.display = 'flex';
+            initSnake();
+        }
+
+        function closeSnakeGame() {
+            document.getElementById('snakeGame').style.display = 'none';
+            if (snakeGameLoop) {
+                clearInterval(snakeGameLoop);
+                snakeGameLoop = null;
+            }
+        }
+
+        function startRunnerGame() {
+            document.getElementById('runnerGame').style.display = 'flex';
+            initRunner();
+        }
+
+        function closeRunnerGame() {
+            document.getElementById('runnerGame').style.display = 'none';
+            if (runnerGameLoop) {
+                clearInterval(runnerGameLoop);
+                runnerGameLoop = null;
+            }
+        }
+
+        function initRunner() {
+            runnerCanvas = document.getElementById('runnerCanvas');
+            runnerCtx = runnerCanvas.getContext('2d');
+            
+            // Initialize player
+            runnerPlayer = {
+                x: 100,
+                y: RUNNER_GROUND_Y - RUNNER_PLAYER_HEIGHT,
+                width: RUNNER_PLAYER_WIDTH,
+                height: RUNNER_PLAYER_HEIGHT,
+                velocity: 0,
+                isJumping: false,
+                isSliding: false
+            };
+            
+            runnerObstacles = [];
+            runnerCoins = [];
+            runnerScore = 0;
+            runnerCoinsCollected = 0;
+            runnerDistance = 0;
+            runnerGameOver = false;
+            runnerGameSpeed = 5;
+            runnerObstacleTimer = 0;
+            runnerCoinTimer = 0;
+            
+            updateRunnerDisplay();
+            
+            // Start game loop
+            runnerGameLoop = setInterval(runnerGameStep, 16); // 60 FPS
+            
+            // Add keyboard controls
+            document.addEventListener('keydown', handleRunnerKey);
+        }
+
+        function runnerGameStep() {
+            if (runnerGameOver) return;
+            
+            // Update player physics
+            updateRunnerPlayer();
+            
+            // Update obstacles
+            updateRunnerObstacles();
+            
+            // Update coins
+            updateRunnerCoins();
+            
+            // Spawn new obstacles and coins
+            runnerObstacleTimer++;
+            runnerCoinTimer++;
+            
+            if (runnerObstacleTimer > RUNNER_OBSTACLE_SPAWN_RATE) {
+                spawnRunnerObstacle();
+                runnerObstacleTimer = 0;
+            }
+            
+            if (runnerCoinTimer > RUNNER_COIN_SPAWN_RATE) {
+                spawnRunnerCoin();
+                runnerCoinTimer = 0;
+            }
+            
+            // Update score and distance
+            runnerScore += 1;
+            runnerDistance += 0.1;
+            
+            // Increase game speed over time
+            if (runnerScore % 1000 === 0) {
+                runnerGameSpeed += 0.5;
+            }
+            
+            updateRunnerDisplay();
+            drawRunner();
+            
+            // Check collisions
+            checkRunnerCollisions();
+        }
+
+        function updateRunnerPlayer() {
+            // Apply gravity
+            runnerPlayer.velocity += runnerGravity;
+            runnerPlayer.y += runnerPlayer.velocity;
+            
+            // Ground collision
+            if (runnerPlayer.y > RUNNER_GROUND_Y - runnerPlayer.height) {
+                runnerPlayer.y = RUNNER_GROUND_Y - runnerPlayer.height;
+                runnerPlayer.velocity = 0;
+                runnerPlayer.isJumping = false;
+            }
+            
+            // Update sliding
+            if (runnerPlayer.isSliding) {
+                runnerPlayer.height = RUNNER_PLAYER_HEIGHT / 2;
+            } else {
+                runnerPlayer.height = RUNNER_PLAYER_HEIGHT;
+            }
+        }
+
+        function spawnRunnerObstacle() {
+            const obstacleTypes = [
+                { width: 30, height: 50, type: 'spike' },
+                { width: 60, height: 30, type: 'barrier' },
+                { width: 40, height: 40, type: 'rock' }
+            ];
+            
+            const obstacle = obstacleTypes[Math.floor(Math.random() * obstacleTypes.length)];
+            runnerObstacles.push({
+                x: runnerCanvas.width,
+                y: RUNNER_GROUND_Y - obstacle.height,
+                width: obstacle.width,
+                height: obstacle.height,
+                type: obstacle.type
+            });
+        }
+
+        function spawnRunnerCoin() {
+            runnerCoins.push({
+                x: runnerCanvas.width,
+                y: Math.random() * (RUNNER_GROUND_Y - 100) + 50,
+                width: 20,
+                height: 20,
+                collected: false
+            });
+        }
+
+        function updateRunnerObstacles() {
+            for (let i = runnerObstacles.length - 1; i >= 0; i--) {
+                const obstacle = runnerObstacles[i];
+                obstacle.x -= runnerGameSpeed;
+                
+                if (obstacle.x + obstacle.width < 0) {
+                    runnerObstacles.splice(i, 1);
+                }
+            }
+        }
+
+        function updateRunnerCoins() {
+            for (let i = runnerCoins.length - 1; i >= 0; i--) {
+                const coin = runnerCoins[i];
+                coin.x -= runnerGameSpeed;
+                
+                if (coin.x + coin.width < 0) {
+                    runnerCoins.splice(i, 1);
+                }
+            }
+        }
+
+        function checkRunnerCollisions() {
+            // Check obstacle collisions
+            for (let obstacle of runnerObstacles) {
+                if (runnerPlayer.x < obstacle.x + obstacle.width &&
+                    runnerPlayer.x + runnerPlayer.width > obstacle.x &&
+                    runnerPlayer.y < obstacle.y + obstacle.height &&
+                    runnerPlayer.y + runnerPlayer.height > obstacle.y) {
+                    endRunnerGame();
+                    return;
+                }
+            }
+            
+            // Check coin collisions
+            for (let coin of runnerCoins) {
+                if (!coin.collected &&
+                    runnerPlayer.x < coin.x + coin.width &&
+                    runnerPlayer.x + runnerPlayer.width > coin.x &&
+                    runnerPlayer.y < coin.y + coin.height &&
+                    runnerPlayer.y + runnerPlayer.height > coin.y) {
+                    coin.collected = true;
+                    runnerCoinsCollected++;
+                    runnerScore += 50;
+                }
+            }
+        }
+
+        function handleRunnerKey(e) {
+            if (runnerGameOver) return;
+            
+            switch(e.key) {
+                case ' ':
+                case 'ArrowUp':
+                    if (!runnerPlayer.isJumping) {
+                        runnerPlayer.velocity = RUNNER_JUMP_POWER;
+                        runnerPlayer.isJumping = true;
+                    }
+                    break;
+                case 'ArrowDown':
+                    runnerPlayer.isSliding = true;
+                    break;
+            }
+        }
+
+        function drawRunner() {
+            // Clear canvas
+            runnerCtx.fillStyle = '#87CEEB';
+            runnerCtx.fillRect(0, 0, runnerCanvas.width, runnerCanvas.height / 2);
+            
+            runnerCtx.fillStyle = '#98FB98';
+            runnerCtx.fillRect(0, runnerCanvas.height / 2, runnerCanvas.width, runnerCanvas.height / 2);
+            
+            // Draw ground
+            runnerCtx.fillStyle = '#8FBC8F';
+            runnerCtx.fillRect(0, RUNNER_GROUND_Y, runnerCanvas.width, runnerCanvas.height - RUNNER_GROUND_Y);
+            
+            // Draw player
+            runnerCtx.fillStyle = '#FF6B35';
+            runnerCtx.fillRect(runnerPlayer.x, runnerPlayer.y, runnerPlayer.width, runnerPlayer.height);
+            
+            // Draw player details
+            runnerCtx.fillStyle = '#000';
+            runnerCtx.fillRect(runnerPlayer.x + 10, runnerPlayer.y + 10, 5, 5); // Eye
+            runnerCtx.fillRect(runnerPlayer.x + 25, runnerPlayer.y + 10, 5, 5); // Eye
+            
+            // Draw obstacles
+            for (let obstacle of runnerObstacles) {
+                switch(obstacle.type) {
+                    case 'spike':
+                        runnerCtx.fillStyle = '#FF0000';
+                        break;
+                    case 'barrier':
+                        runnerCtx.fillStyle = '#8B4513';
+                        break;
+                    case 'rock':
+                        runnerCtx.fillStyle = '#696969';
+                        break;
+                }
+                runnerCtx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+            }
+            
+            // Draw coins
+            for (let coin of runnerCoins) {
+                if (!coin.collected) {
+                    runnerCtx.fillStyle = '#FFD700';
+                    runnerCtx.beginPath();
+                    runnerCtx.arc(coin.x + coin.width/2, coin.y + coin.height/2, coin.width/2, 0, 2 * Math.PI);
+                    runnerCtx.fill();
+                    
+                    runnerCtx.fillStyle = '#FFA500';
+                    runnerCtx.font = '12px Arial';
+                    runnerCtx.textAlign = 'center';
+                    runnerCtx.fillText('$', coin.x + coin.width/2, coin.y + coin.height/2 + 4);
+                }
+            }
+        }
+
+        function updateRunnerDisplay() {
+            document.getElementById('runnerScore').textContent = 
+                `Score: ${runnerScore} | Coins: ${runnerCoinsCollected} | Distance: ${Math.floor(runnerDistance)}m`;
+        }
+
+        function endRunnerGame() {
+            runnerGameOver = true;
+            clearInterval(runnerGameLoop);
+            runnerGameLoop = null;
+            
+            // Show game over screen
+            document.getElementById('runnerFinalScore').textContent = `Final Score: ${runnerScore}`;
+            document.getElementById('runnerFinalCoins').textContent = `Coins Collected: ${runnerCoinsCollected}`;
+            document.getElementById('runnerFinalDistance').textContent = `Distance: ${Math.floor(runnerDistance)}m`;
+            document.getElementById('runnerGameOver').style.display = 'block';
+            
+            // Update user profile
+            updateUserProfile(runnerCoinsCollected, runnerScore);
+            
+            // Check daily challenge
+            checkChallengeProgress(runnerScore);
+            
+            // Show result
+            showGameResult('runner', runnerScore, runnerCoinsCollected);
+            updateDisplay();
+        }
+
+        function restartRunnerGame() {
+            document.getElementById('runnerGameOver').style.display = 'none';
+            initRunner();
+        }
+
+        function initSnake() {
+            snakeCanvas = document.getElementById('snakeCanvas');
+            snakeCtx = snakeCanvas.getContext('2d');
+            
+            // Initialize snake
+            snake = [
+                {x: 10, y: 10}
+            ];
+            
+            snakeDirection = 'right';
+            snakeScore = 0;
+            snakeGameOver = false;
+            snakePaused = false;
+            
+            spawnSnakeFood();
+            updateSnakeDisplay();
+            
+            // Start game loop
+            snakeGameLoop = setInterval(snakeGameStep, 300);
+            
+            // Add keyboard controls
+            document.addEventListener('keydown', handleSnakeKey);
+        }
+
+        function spawnSnakeFood() {
+            snakeFood = {
+                x: Math.floor(Math.random() * SNAKE_GRID_SIZE),
+                y: Math.floor(Math.random() * SNAKE_GRID_SIZE)
+            };
+            
+            // Make sure food doesn't spawn on snake
+            for (let segment of snake) {
+                if (segment.x === snakeFood.x && segment.y === snakeFood.y) {
+                    spawnSnakeFood();
+                    return;
+                }
+            }
+        }
+
+        function snakeGameStep() {
+            if (snakeGameOver || snakePaused) return;
+            
+            // Move snake
+            const head = {x: snake[0].x, y: snake[0].y};
+            
+            switch(snakeDirection) {
+                case 'up': head.y--; break;
+                case 'down': head.y++; break;
+                case 'left': head.x--; break;
+                case 'right': head.x++; break;
+            }
+            
+            // Check collision with walls
+            if (head.x < 0 || head.x >= SNAKE_GRID_SIZE || head.y < 0 || head.y >= SNAKE_GRID_SIZE) {
+                endSnakeGame();
+                return;
+            }
+            
+            // Check collision with self
+            for (let segment of snake) {
+                if (head.x === segment.x && head.y === segment.y) {
+                    endSnakeGame();
+                    return;
+                }
+            }
+            
+            // Add new head
+            snake.unshift(head);
+            
+            // Check if food is eaten
+            if (head.x === snakeFood.x && head.y === snakeFood.y) {
+                snakeScore += 10;
+                spawnSnakeFood();
+                updateSnakeDisplay();
+            } else {
+                // Remove tail if no food eaten
+                snake.pop();
+            }
+            
+            drawSnake();
+        }
+
+        function handleSnakeKey(e) {
+            if (snakeGameOver) return;
+            
+            switch(e.key) {
+                case 'ArrowUp':
+                    if (snakeDirection !== 'down') snakeDirection = 'up';
+                    break;
+                case 'ArrowDown':
+                    if (snakeDirection !== 'up') snakeDirection = 'down';
+                    break;
+                case 'ArrowLeft':
+                    if (snakeDirection !== 'right') snakeDirection = 'left';
+                    break;
+                case 'ArrowRight':
+                    if (snakeDirection !== 'left') snakeDirection = 'right';
+                    break;
+                case ' ':
+                    snakePaused = !snakePaused;
+                    break;
+            }
+        }
+
+        function drawSnake() {
+            // Clear canvas
+            snakeCtx.fillStyle = '#2E7D32';
+            snakeCtx.fillRect(0, 0, snakeCanvas.width, snakeCanvas.height);
+            
+            // Draw snake
+            snakeCtx.fillStyle = '#4CAF50';
+            for (let i = 0; i < snake.length; i++) {
+                const segment = snake[i];
+                snakeCtx.fillRect(
+                    segment.x * SNAKE_BLOCK_SIZE, 
+                    segment.y * SNAKE_BLOCK_SIZE, 
+                    SNAKE_BLOCK_SIZE - 1, 
+                    SNAKE_BLOCK_SIZE - 1
+                );
+                
+                // Draw eyes on head
+                if (i === 0) {
+                    snakeCtx.fillStyle = '#000';
+                    const eyeSize = 3;
+                    const eyeOffset = 4;
+                    
+                    // Position eyes based on direction
+                    let leftEyeX, leftEyeY, rightEyeX, rightEyeY;
+                    
+                    switch(snakeDirection) {
+                        case 'right':
+                            leftEyeX = segment.x * SNAKE_BLOCK_SIZE + SNAKE_BLOCK_SIZE - eyeOffset;
+                            leftEyeY = segment.y * SNAKE_BLOCK_SIZE + eyeOffset;
+                            rightEyeX = segment.x * SNAKE_BLOCK_SIZE + SNAKE_BLOCK_SIZE - eyeOffset;
+                            rightEyeY = segment.y * SNAKE_BLOCK_SIZE + SNAKE_BLOCK_SIZE - eyeOffset;
+                            break;
+                        case 'left':
+                            leftEyeX = segment.x * SNAKE_BLOCK_SIZE + eyeOffset;
+                            leftEyeY = segment.y * SNAKE_BLOCK_SIZE + eyeOffset;
+                            rightEyeX = segment.x * SNAKE_BLOCK_SIZE + eyeOffset;
+                            rightEyeY = segment.y * SNAKE_BLOCK_SIZE + SNAKE_BLOCK_SIZE - eyeOffset;
+                            break;
+                        case 'up':
+                            leftEyeX = segment.x * SNAKE_BLOCK_SIZE + eyeOffset;
+                            leftEyeY = segment.y * SNAKE_BLOCK_SIZE + eyeOffset;
+                            rightEyeX = segment.x * SNAKE_BLOCK_SIZE + SNAKE_BLOCK_SIZE - eyeOffset;
+                            rightEyeY = segment.y * SNAKE_BLOCK_SIZE + eyeOffset;
+                            break;
+                        case 'down':
+                            leftEyeX = segment.x * SNAKE_BLOCK_SIZE + eyeOffset;
+                            leftEyeY = segment.y * SNAKE_BLOCK_SIZE + SNAKE_BLOCK_SIZE - eyeOffset;
+                            rightEyeX = segment.x * SNAKE_BLOCK_SIZE + SNAKE_BLOCK_SIZE - eyeOffset;
+                            rightEyeY = segment.y * SNAKE_BLOCK_SIZE + SNAKE_BLOCK_SIZE - eyeOffset;
+                            break;
+                    }
+                    
+                    snakeCtx.fillRect(leftEyeX, leftEyeY, eyeSize, eyeSize);
+                    snakeCtx.fillRect(rightEyeX, rightEyeY, eyeSize, eyeSize);
+                    snakeCtx.fillStyle = '#4CAF50';
+                }
+            }
+            
+            // Draw food
+            snakeCtx.fillStyle = '#FF5722';
+            snakeCtx.fillRect(
+                snakeFood.x * SNAKE_BLOCK_SIZE, 
+                snakeFood.y * SNAKE_BLOCK_SIZE, 
+                SNAKE_BLOCK_SIZE - 1, 
+                SNAKE_BLOCK_SIZE - 1
+            );
+        }
+
+        function updateSnakeDisplay() {
+            document.getElementById('snakeScore').textContent = `Score: ${snakeScore} | Length: ${snake.length}`;
+        }
+
+        function endSnakeGame() {
+            clearInterval(snakeGameLoop);
+            snakeGameLoop = null;
+            
+            // Update user profile with Snake score
+            updateUserProfile(Math.floor(snakeScore / 10), snakeScore);
+            
+            // Check daily challenge
+            checkChallengeProgress(snakeScore);
+            
+            // Show result
+            showGameResult('snake', snakeScore, Math.floor(snakeScore / 10));
+            updateDisplay();
+            
+            // Close Snake game
+            setTimeout(() => {
+                closeSnakeGame();
+            }, 3000);
+        }
+
+        function initTetris() {
+            tetrisCanvas = document.getElementById('tetrisCanvas');
+            tetrisCtx = tetrisCanvas.getContext('2d');
+            
+            // Initialize board
+            tetrisBoard = [];
+            for (let y = 0; y < TETRIS_BOARD_HEIGHT; y++) {
+                tetrisBoard[y] = [];
+                for (let x = 0; x < TETRIS_BOARD_WIDTH; x++) {
+                    tetrisBoard[y][x] = 0;
+                }
+            }
+            
+            tetrisScore = 0;
+            tetrisLines = 0;
+            tetrisGameOver = false;
+            tetrisPaused = false;
+            
+            spawnTetrisPiece();
+            updateTetrisDisplay();
+            
+            // Start game loop
+            tetrisGameLoop = setInterval(tetrisGameStep, 1000);
+            
+            // Add keyboard controls
+            document.addEventListener('keydown', handleTetrisKey);
+        }
+
+        function spawnTetrisPiece() {
+            const pieceIndex = Math.floor(Math.random() * TETRIS_PIECES.length);
+            tetrisPiece = {
+                shape: TETRIS_PIECES[pieceIndex],
+                color: TETRIS_COLORS[pieceIndex],
+                x: Math.floor(TETRIS_BOARD_WIDTH / 2) - Math.floor(TETRIS_PIECES[pieceIndex][0].length / 2),
+                y: 0
+            };
+            
+            if (tetrisCollision()) {
+                tetrisGameOver = true;
+            }
+        }
+
+        function tetrisCollision() {
+            for (let y = 0; y < tetrisPiece.shape.length; y++) {
+                for (let x = 0; x < tetrisPiece.shape[y].length; x++) {
+                    if (tetrisPiece.shape[y][x]) {
+                        const boardX = tetrisPiece.x + x;
+                        const boardY = tetrisPiece.y + y;
+                        
+                        if (boardX < 0 || boardX >= TETRIS_BOARD_WIDTH || 
+                            boardY >= TETRIS_BOARD_HEIGHT ||
+                            (boardY >= 0 && tetrisBoard[boardY][boardX])) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        function tetrisGameStep() {
+            if (tetrisGameOver || tetrisPaused) return;
+            
+            tetrisPiece.y++;
+            
+            if (tetrisCollision()) {
+                tetrisPiece.y--;
+                mergeTetrisPiece();
+                clearTetrisLines();
+                spawnTetrisPiece();
+                
+                if (tetrisGameOver) {
+                    endTetrisGame();
+                    return;
+                }
+            }
+            
+            drawTetris();
+        }
+
+        function mergeTetrisPiece() {
+            for (let y = 0; y < tetrisPiece.shape.length; y++) {
+                for (let x = 0; x < tetrisPiece.shape[y].length; x++) {
+                    if (tetrisPiece.shape[y][x]) {
+                        const boardX = tetrisPiece.x + x;
+                        const boardY = tetrisPiece.y + y;
+                        if (boardY >= 0) {
+                            tetrisBoard[boardY][boardX] = tetrisPiece.color;
+                        }
+                    }
+                }
+            }
+        }
+
+        function clearTetrisLines() {
+            for (let y = TETRIS_BOARD_HEIGHT - 1; y >= 0; y--) {
+                let isLineFull = true;
+                for (let x = 0; x < TETRIS_BOARD_WIDTH; x++) {
+                    if (!tetrisBoard[y][x]) {
+                        isLineFull = false;
+                        break;
+                    }
+                }
+                
+                if (isLineFull) {
+                    tetrisBoard.splice(y, 1);
+                    tetrisBoard.unshift(new Array(TETRIS_BOARD_WIDTH).fill(0));
+                    tetrisLines++;
+                    tetrisScore += 100;
+                    y++; // Check the same line again
+                }
+            }
+            updateTetrisDisplay();
+        }
+
+        function handleTetrisKey(e) {
+            if (tetrisGameOver) return;
+            
+            switch(e.key) {
+                case 'ArrowLeft':
+                    tetrisPiece.x--;
+                    if (tetrisCollision()) tetrisPiece.x++;
+                    break;
+                case 'ArrowRight':
+                    tetrisPiece.x++;
+                    if (tetrisCollision()) tetrisPiece.x--;
+                    break;
+                case 'ArrowDown':
+                    tetrisPiece.y++;
+                    if (tetrisCollision()) {
+                        tetrisPiece.y--;
+                        mergeTetrisPiece();
+                        clearTetrisLines();
+                        spawnTetrisPiece();
+                    }
+                    break;
+                case 'ArrowUp':
+                    rotateTetrisPiece();
+                    break;
+                case ' ':
+                    tetrisPaused = !tetrisPaused;
+                    break;
+            }
+            drawTetris();
+        }
+
+        function rotateTetrisPiece() {
+            const rotated = [];
+            for (let x = 0; x < tetrisPiece.shape[0].length; x++) {
+                rotated[x] = [];
+                for (let y = tetrisPiece.shape.length - 1; y >= 0; y--) {
+                    rotated[x].push(tetrisPiece.shape[y][x]);
+                }
+            }
+            
+            const originalShape = tetrisPiece.shape;
+            tetrisPiece.shape = rotated;
+            
+            if (tetrisCollision()) {
+                tetrisPiece.shape = originalShape;
+            }
+        }
+
+        function drawTetris() {
+            // Clear canvas
+            tetrisCtx.fillStyle = '#000';
+            tetrisCtx.fillRect(0, 0, tetrisCanvas.width, tetrisCanvas.height);
+            
+            // Draw board
+            for (let y = 0; y < TETRIS_BOARD_HEIGHT; y++) {
+                for (let x = 0; x < TETRIS_BOARD_WIDTH; x++) {
+                    if (tetrisBoard[y][x]) {
+                        tetrisCtx.fillStyle = tetrisBoard[y][x];
+                        tetrisCtx.fillRect(x * TETRIS_BLOCK_SIZE, y * TETRIS_BLOCK_SIZE, 
+                                         TETRIS_BLOCK_SIZE - 1, TETRIS_BLOCK_SIZE - 1);
+                    }
+                }
+            }
+            
+            // Draw current piece
+            if (tetrisPiece) {
+                tetrisCtx.fillStyle = tetrisPiece.color;
+                for (let y = 0; y < tetrisPiece.shape.length; y++) {
+                    for (let x = 0; x < tetrisPiece.shape[y].length; x++) {
+                        if (tetrisPiece.shape[y][x]) {
+                            tetrisCtx.fillRect((tetrisPiece.x + x) * TETRIS_BLOCK_SIZE, 
+                                             (tetrisPiece.y + y) * TETRIS_BLOCK_SIZE,
+                                             TETRIS_BLOCK_SIZE - 1, TETRIS_BLOCK_SIZE - 1);
+                        }
+                    }
+                }
+            }
+        }
+
+        function updateTetrisDisplay() {
+            document.getElementById('tetrisScore').textContent = `Score: ${tetrisScore} | Lines: ${tetrisLines}`;
+        }
+
+        function endTetrisGame() {
+            clearInterval(tetrisGameLoop);
+            tetrisGameLoop = null;
+            
+            // Update user profile with Tetris score
+            updateUserProfile(Math.floor(tetrisScore / 10), tetrisScore);
+            
+            // Check daily challenge
+            checkChallengeProgress(tetrisScore);
+            
+            // Show result
+            showGameResult('tetris', tetrisScore, Math.floor(tetrisScore / 10));
+            updateDisplay();
+            
+            // Close Tetris game
+            setTimeout(() => {
+                closeTetrisGame();
+            }, 3000);
+        }
+
+        function playGame(gameType) {
+            // Simulate game loading
+            console.log(`Loading game: ${gameType}`);
+            console.log(`Fetching assets for ${gameType}...`);
+            console.log(`Setting up environment for ${gameType}...`);
+            console.log("Starting game loop...");
+
+            // Simulate game session
+            const pointsEarned = Math.floor(Math.random() * 150) + 50;
+            const coinsEarned = Math.floor(pointsEarned / 10);
+
+            // Update user profile
+            updateUserProfile(coinsEarned, pointsEarned);
+
+            // Check daily challenge
+            checkChallengeProgress(pointsEarned);
+
+            // Show result
+            showGameResult(gameType, pointsEarned, coinsEarned);
+
+            // Update display
+            updateDisplay();
+
+            // Create coin animation
+            createCoinAnimation();
+        }
+
+        function checkChallengeProgress(pointsEarned) {
+            dailyChallenge.progress += pointsEarned;
+            
+            if (dailyChallenge.progress >= dailyChallenge.target && !dailyChallenge.completed) {
+                dailyChallenge.completed = true;
+                userProfile.coins += dailyChallenge.reward;
+                showChallengeNotification();
+            }
+        }
+
+        function showGameResult(gameType, points, coins) {
+            const gameInfo = games[gameType];
+            const resultContent = document.getElementById('resultContent');
+            resultContent.innerHTML = `
+                <p>You played <strong>${gameInfo.name}</strong> ${gameInfo.emoji}</p>
+                <p>Points earned: <strong>${points}</strong></p>
+                <p>Coins earned: <strong>${coins}</strong></p>
+                <p>Daily challenge progress: <strong>${dailyChallenge.progress}/${dailyChallenge.target}</strong></p>
+            `;
+            
+            document.getElementById('gameResult').style.display = 'block';
+            
+            // Hide result after 5 seconds
+            setTimeout(() => {
+                document.getElementById('gameResult').style.display = 'none';
+            }, 5000);
+        }
+
+        function showChallengeNotification() {
+            const challengeContent = document.getElementById('challengeContent');
+            challengeContent.innerHTML = `
+                <p>Daily Score Challenge Completed! 🎉</p>
+                <p>Reward: <strong>${dailyChallenge.reward} coins</strong></p>
+            `;
+            
+            document.getElementById('challengeNotification').style.display = 'block';
+            
+            // Hide notification after 5 seconds
+            setTimeout(() => {
+                document.getElementById('challengeNotification').style.display = 'none';
+            }, 5000);
+        }
+
+        function createCoinAnimation() {
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const coin = document.createElement('div');
+                    coin.className = 'coin-animation';
+                    coin.textContent = '🪙';
+                    coin.style.left = Math.random() * window.innerWidth + 'px';
+                    document.body.appendChild(coin);
+                    
+                    setTimeout(() => {
+                        coin.remove();
+                    }, 2000);
+                }, i * 200);
+            }
+        }
+
+        function viewStats() {
+            if (currentUserIndex >= 0) {
+                alert(`
+Current Profile: ${userProfile.name}
+Total Score: ${userProfile.totalScore}
+Coins: ${userProfile.coins}
+Games Played: ${userProfile.gamesPlayed}
+Daily Challenge Progress: ${dailyChallenge.progress}/${dailyChallenge.target}
+                `);
+            } else {
+                alert('No active profile.');
+            }
+        }
+
+        function exitGame() {
+            // Save current profile before exiting
+            if (currentUserIndex >= 0) {
+                saveCurrentProfile();
+            }
+            
+            // Save user data (placeholder for database save)
+            console.log("Saving user profiles:", user_profiles);
+            alert('Thanks for playing PixelQuest Arcade! Your progress has been saved.');
+            
+            // Reset for new session
+            currentUserIndex = -1;
+            userProfile = {
+                name: '',
+                coins: 0,
+                totalScore: 0,
+                gamesPlayed: 0
+            };
+            
+            dailyChallenge = {
+                id: "daily_score",
+                progress: 40,
+                target: 200,
+                completed: false,
+                reward: 50
+            };
+            
+            document.getElementById('gameMenu').style.display = 'none';
+            document.getElementById('welcomeScreen').style.display = 'block';
+            document.getElementById('playerName').value = '';
+        }
+
+        function updateDisplay() {
+            if (currentUserIndex >= 0) {
+                document.getElementById('userInfo').textContent = `Welcome back, ${userProfile.name}!`;
+                document.getElementById('totalScore').textContent = userProfile.totalScore;
+                document.getElementById('totalCoins').textContent = userProfile.coins;
+                document.getElementById('gamesPlayed').textContent = userProfile.gamesPlayed;
+            } else {
+                document.getElementById('userInfo').textContent = 'No active profile';
+                document.getElementById('totalScore').textContent = '0';
+                document.getElementById('totalCoins').textContent = '0';
+                document.getElementById('gamesPlayed').textContent = '0';
+            }
+        }
+
+        function switchUser() {
+            if (user_profiles.length === 0) {
+                alert('No profiles available. Please create a profile first.');
+                return;
+            }
+
+            let profileList = 'Select a profile:\n';
+            user_profiles.forEach((profile, index) => {
+                profileList += `${index + 1}. ${profile.name} (Score: ${profile.totalScore}, Coins: ${profile.coins})\n`;
+            });
+
+            const choice = prompt(profileList + '\nEnter profile number:');
+            const profileIndex = parseInt(choice) - 1;
+
+            if (profileIndex >= 0 && profileIndex < user_profiles.length) {
+                loadUserProfile(profileIndex);
+                updateDisplay();
+                alert(`Switched to ${userProfile.name}'s profile!`);
+            } else {
+                alert('Invalid profile selection.');
+            }
+        }
+
+        function deleteCurrentProfile() {
+            if (currentUserIndex >= 0 && user_profiles.length > 1) {
+                const profileName = userProfile.name;
+                if (confirm(`Are you sure you want to delete ${profileName}'s profile?`)) {
+                    user_profiles.splice(currentUserIndex, 1);
+                    currentUserIndex = -1;
+                    userProfile = { name: '', coins: 0, totalScore: 0, gamesPlayed: 0 };
+                    saveToDatabase(user_profiles);
+                    document.getElementById('gameMenu').style.display = 'none';
+                    document.getElementById('welcomeScreen').style.display = 'block';
+                    document.getElementById('playerName').value = '';
+                    alert(`${profileName}'s profile has been deleted.`);
+                }
+            } else if (user_profiles.length <= 1) {
+                alert('Cannot delete the last profile. At least one profile must remain.');
+            }
+        }
+
+        function viewAllProfiles() {
+            if (user_profiles.length === 0) {
+                alert('No profiles available.');
+                return;
+            }
+
+            let profileInfo = 'All Profiles:\n\n';
+            user_profiles.forEach((profile, index) => {
+                const isCurrent = index === currentUserIndex ? ' (Current)' : '';
+                profileInfo += `${index + 1}. ${profile.name}${isCurrent}\n`;
+                profileInfo += `   Score: ${profile.totalScore}\n`;
+                profileInfo += `   Coins: ${profile.coins}\n`;
+                profileInfo += `   Games: ${profile.gamesPlayed}\n`;
+                profileInfo += `   Created: ${new Date(profile.createdAt).toLocaleDateString()}\n\n`;
+            });
+
+            alert(profileInfo);
+        }
+
+        // Initialize the application
+        function initApp() {
+            loadFromDatabase();
+            console.log('PixelQuest Arcade initialized with', user_profiles.length, 'profiles');
+            
+            // Simulating game sessions
+            end_game_session("Alice", "tetris", 1000);
+            end_game_session("Bob", "snake", 800);
+            end_game_session("Alice", "runner", 500);
+            end_game_session("Charlie", "runner", 1200);
+            
+            print_leaderboard();
+        }
+
+        // Allow Enter key to start game
+        document.getElementById('playerName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                startGame();
+            }
+        });
+
+        // Initialize when page loads
+        window.addEventListener('load', initApp);
+    </script>
+</body>
+</html> 
