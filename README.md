@@ -1,162 +1,62 @@
-# My AI Journey
+# PixelQuest Arcade
 
-Welcome to my personal AI learning and development journey! This repository documents my exploration and growth in the field of artificial intelligence, from basic concepts to advanced implementations.
+## 🎮 About This Project
 
-## 🚀 Overview
+**PixelQuest Arcade** is a web-based arcade platform featuring classic and modern mini-games, all in one place. Designed for all ages, it offers:
 
-This project serves as a living document of my journey into the world of AI, including:
-- Learning resources and notes
-- Code implementations
-- Project experiments
-- Best practices and insights
+- **Tetris**: Drop and rotate blocks to clear lines
+- **Snake**: Eat food, grow your snake, and avoid collisions
+- **Runner**: Dash, jump, and slide to collect coins and dodge obstacles
 
-## 📚 Learning Path
-
-1. **Fundamentals**
-   - Machine Learning basics
-   - Deep Learning concepts
-   - Neural Networks
-   - Data preprocessing and analysis
-
-2. **Advanced Topics**
-   - Natural Language Processing (NLP)
-   - Computer Vision
-   - Reinforcement Learning
-   - AI Ethics and Responsible AI
-
-3. **Practical Applications**
-   - Building AI models
-   - Deploying AI solutions
-   - Integration with real-world applications
-
-## 📊 AI Pursuit Progress Tracker
-
-### Current Classes
-- [ ] Introduction to AI
-- [ ] Machine Learning Fundamentals
-- [ ] Deep Learning Basics
-- [ ] Data Science Essentials
-- [ ] AI Project Development
-
-### Progress Metrics
-- **Completion Status**: Track completed modules and assignments
-- **Understanding Level**: Rate your comprehension (1-5)
-- **Practical Application**: Document hands-on projects
-- **Challenges**: Note areas needing more focus
-- **Achievements**: Celebrate milestones and breakthroughs
-
-### Weekly Reflection Template
-```markdown
-## Week of [Date]
-
-### Classes Progress
-- Class 1: [Progress]
-- Class 2: [Progress]
-- Class 3: [Progress]
-
-### Key Learnings
-- [Learning Point 1]
-- [Learning Point 2]
-- [Learning Point 3]
-
-### Challenges
-- [Challenge 1]
-- [Challenge 2]
-
-### Next Steps
-- [Action Item 1]
-- [Action Item 2]
-```
-
-## 🛠️ Technologies & Tools
-
-- Python
-- TensorFlow/PyTorch
-- Scikit-learn
-- Jupyter Notebooks
-- Git & GitHub
-- Various AI/ML libraries and frameworks
-
-## 📁 Project Structure
-
-```
-my_ai_journey/
-├── notebooks/         # Jupyter notebooks for experiments
-├── src/              # Source code for implementations
-├── data/             # Datasets and data processing scripts
-├── docs/             # Documentation and learning resources
-└── projects/         # Complete AI project implementations
-```
-
-## 🏗️ Organizational Structure
-
-### 1. Learning
-- Study materials and notes
-- Code examples and implementations
-- Practice projects
-- Research summaries
-
-### 2. Projects
-- Project planning and goals
-- Implementation progress
-- Testing and validation
-- Documentation
-
-### 3. Resources
-- Dataset management
-- Model tracking
-- Code organization
-- Learning materials
-
-### 4. Community
-- Knowledge sharing
-- Code reviews
-- Collaboration
-- Discussion forums
-
-## 🚀 Getting Started
-
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/yourusername/my_ai_journey.git
-   ```
-
-2. Set up your development environment:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
-
-3. Start exploring the notebooks and projects!
-
-## 📝 Learning Resources
-
-- Online courses and tutorials
-- Books and research papers
-- Community forums and discussions
-- Practical projects and challenges
-
-## 🤝 Contributing
-
-While this is primarily a personal learning journey, I welcome:
-- Suggestions for learning resources
-- Code improvements
-- Discussion of AI concepts
-- Collaboration on interesting projects
-
-## 📫 Contact
-
-Feel free to reach out for:
-- Questions about AI concepts
-- Collaboration opportunities
-- Resource recommendations
-- General discussion about AI
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+The platform supports multiple user profiles, persistent progress, daily challenges, and a competitive leaderboard. It's perfect for families, friends, or anyone who loves retro and casual games!
 
 ---
 
-*"The journey of a thousand miles begins with a single step." - Lao Tzu* 
+## ✨ Features
+
+- **Multiple Games**: Play Tetris, Snake, and Runner—each with unique mechanics
+- **User Profiles**: Create, switch, and manage multiple player profiles
+- **Persistent Progress**: All stats and progress are saved in your browser
+- **Leaderboard**: See how you rank against other players
+- **Daily Challenges**: Complete daily goals for extra rewards
+- **No Installation Needed**: 100% client-side, works in any modern browser
+
+---
+
+## 🧠 How It Works (Core Logic)
+
+- **User Profiles**: Each player has a profile (name, score, coins, games played) stored in your browser's localStorage. You can switch users or create new ones anytime.
+- **Game Sessions**: After each game, your score and coins are automatically added to your profile. Coin rewards are calculated based on the game and your performance.
+- **Leaderboard**: The leaderboard is generated by sorting all profiles by score, with medals for the top 3 players.
+- **Daily Challenges**: Track your progress toward daily goals and earn bonus coins.
+- **Simulated Sessions**: On first load, the app creates sample users and scores to show how everything works.
+- **Extensible Design**: The code is modular, so you can add new games or features easily.
+
+---
+
+## 🚀 How to Run PixelQuest Arcade
+
+1. **Download or Clone the Repository**
+   ```sh
+   git clone <your-repo-url>
+   cd pixelquest-arcade
+   ```
+
+2. **Open the Game**
+   - Double-click `pixelquest_arcade.html` or open it in any modern web browser (Chrome, Firefox, Edge, Safari).
+   - No server or installation required—just open and play!
+
+3. **Start Playing**
+   - Enter your player name to create or load a profile.
+   - Choose a game from the menu.
+   - View your stats, switch users, or check the leaderboard at any time.
+
+---
+
+## 🙌 Contributing & Feedback
+
+Have ideas or want to contribute? Open an issue or pull request. Feedback is always welcome!
+
+---
+
+**Enjoy PixelQuest Arcade!** 

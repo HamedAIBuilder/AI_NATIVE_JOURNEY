@@ -663,7 +663,8 @@
                 if (user.name === username) {
                     user.coins += coins;
                     user.totalScore += score;
-                    console.log(`Updated profile for ${username}`);
+                    user.gamesPlayed = user.gamesPlayed ?? 0;
+                    user.createdAt = user.createdAt ?? new Date().toISOString();
                     saveToDatabase(user_profiles);
                     return;
                 }
@@ -677,7 +678,6 @@
                 createdAt: new Date().toISOString()
             };
             user_profiles.push(new_user);
-            console.log(`Added new user: ${username}`);
             saveToDatabase(user_profiles);
         }
 
@@ -711,7 +711,8 @@
         }
 
         function print_leaderboard() {
-            const sorted_users = user_profiles.sort((a, b) => b.totalScore - a.totalScore);
+            // Use slice().sort() to avoid mutating the original array
+            const sorted_users = user_profiles.slice().sort((a, b) => b.totalScore - a.totalScore);
             console.log("Leaderboard:");
             for (let user of sorted_users) {
                 console.log(`${user.name}: Score = ${user.totalScore}, Coins = ${user.coins}`);
@@ -723,17 +724,14 @@
                 alert('No profiles available for leaderboard.');
                 return;
             }
-
-            const sorted_users = user_profiles.sort((a, b) => b.totalScore - a.totalScore);
+            const sorted_users = user_profiles.slice().sort((a, b) => b.totalScore - a.totalScore);
             let leaderboardText = "🏆 LEADERBOARD 🏆\n\n";
-            
             sorted_users.forEach((user, index) => {
                 const rank = index + 1;
                 const medal = rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : `${rank}.`;
                 leaderboardText += `${medal} ${user.name}\n`;
-                leaderboardText += `   Score: ${user.totalScore} | Coins: ${user.coins} | Games: ${user.gamesPlayed}\n\n`;
+                leaderboardText += `   Score: ${user.totalScore} | Coins: ${user.coins} | Games: ${user.gamesPlayed ?? 0}\n\n`;
             });
-
             alert(leaderboardText);
         }
 
@@ -1725,14 +1723,15 @@ Daily Challenge Progress: ${dailyChallenge.progress}/${dailyChallenge.target}
         function initApp() {
             loadFromDatabase();
             console.log('PixelQuest Arcade initialized with', user_profiles.length, 'profiles');
-            
-            // Simulating game sessions
-            end_game_session("Alice", "tetris", 1000);
-            end_game_session("Bob", "snake", 800);
-            end_game_session("Alice", "runner", 500);
-            end_game_session("Charlie", "runner", 1200);
-            
-            print_leaderboard();
+            // Only run simulation if no profiles exist
+            if (user_profiles.length === 0) {
+                // Simulating game sessions
+                end_game_session("Alice", "tetris", 1000);
+                end_game_session("Bob", "snake", 800);
+                end_game_session("Alice", "runner", 500);
+                end_game_session("Charlie", "runner", 1200);
+                print_leaderboard();
+            }
         }
 
         // Allow Enter key to start game
