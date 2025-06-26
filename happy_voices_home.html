@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎵 Welcome to Happy Voices Sing-Along! 🎤</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background elements */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: float 20s infinite linear;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.2);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shine 3s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        h1 {
+            color: #ff6b6b;
+            font-size: 3em;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24, #ff9ff3);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .subtitle {
+            color: #4ecdc4;
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .welcome-form {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .form-group {
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .form-group label {
+            color: white;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1.1em;
+            border-radius: 15px;
+            border: 3px solid #3498db;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group input:hover,
+        .form-group select:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #e74c3c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .start-button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.4em;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            font-weight: bold;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .start-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .start-button:hover::before {
+            left: 100%;
+        }
+
+        .start-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .start-button:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+
+        .music-notes {
+            position: absolute;
+            font-size: 2em;
+            color: rgba(255, 255, 255, 0.3);
+            animation: floatNote 4s infinite linear;
+            pointer-events: none;
+        }
+
+        .music-notes:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+        .music-notes:nth-child(2) { top: 20%; right: 15%; animation-delay: 1s; }
+        .music-notes:nth-child(3) { bottom: 30%; left: 20%; animation-delay: 2s; }
+        .music-notes:nth-child(4) { bottom: 20%; right: 10%; animation-delay: 3s; }
+
+        @keyframes floatNote {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        .emoji {
+            font-size: 1.5em;
+            margin: 0 5px;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                max-width: 95%;
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2.5em;
+            }
+            
+            .welcome-form {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating music notes -->
+    <div class="music-notes">🎵</div>
+    <div class="music-notes">🎶</div>
+    <div class="music-notes">🎤</div>
+    <div class="music-notes">🎸</div>
+
+    <div class="container">
+        <h1>🎵 Welcome to Happy Voices Sing-Along! 🎤</h1>
+        <p class="subtitle">Let's get to know you before we start singing! 🌟</p>
+
+        <div class="welcome-form">
+            <form id="userForm">
+                <div class="form-group">
+                    <label for="userName">What's your name? <span class="emoji">👋</span></label>
+                    <input type="text" id="userName" name="userName" placeholder="Enter your name here..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="userAge">How old are you? <span class="emoji">🎂</span></label>
+                    <input type="number" id="userAge" name="userAge" min="1" max="120" placeholder="Enter your age..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="musicGenre">What type of songs do you like? <span class="emoji">🎵</span></label>
+                    <select id="musicGenre" name="musicGenre" required>
+                        <option value="">Choose your favorite genre...</option>
+                        <option value="nursery-rhymes">Nursery Rhymes 🍼</option>
+                        <option value="action-songs">Action Songs 💃</option>
+                        <option value="counting-songs">Counting Songs 🔢</option>
+                        <option value="educational-songs">Educational Songs 📚</option>
+                        <option value="animal-songs">Animal Songs 🐾</option>
+                        <option value="pop-songs">Pop Songs 🎤</option>
+                        <option value="rnb-songs">R&B Songs 🎧</option>
+                        <option value="hip-hop-songs">Hip Hop Songs 🎤</option>
+                        <option value="afro-music">Afro Music 🌍</option>
+                        <option value="reggae-songs">Reggae Songs 🎵</option>
+                        <option value="reggaeton-songs">Reggaeton Songs 🕺</option>
+                        <option value="all-songs">All Songs! 🌈</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="start-button">🎤 Let's Start Singing! 🎵</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('userForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const userName = document.getElementById('userName').value;
+            const userAge = document.getElementById('userAge').value;
+            const musicGenre = document.getElementById('musicGenre').value;
+            
+            // Store user data in localStorage
+            localStorage.setItem('userName', userName);
+            localStorage.setItem('userAge', userAge);
+            localStorage.setItem('musicGenre', musicGenre);
+            
+            // Redirect to the main singing app
+            window.location.href = 'happy_voices_sing_along.html';
+        });
+
+        // Add some fun animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.style.transform = 'translateY(-2px) scale(1.02)';
+                });
+                input.addEventListener('blur', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

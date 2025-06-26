@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Voices Sing-Along with YouTube</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .welcome-screen {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(45deg, #ffd700, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            backdrop-filter: blur(5px);
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .start-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .main-content {
+            display: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .user-info {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .song-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .song-card {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .song-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border-color: #ffd700;
+        }
+
+        .song-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .song-card:hover::before {
+            left: 100%;
+        }
+
+        .song-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ffd700;
+        }
+
+        .song-description {
+            font-size: 1em;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        .song-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .youtube-btn {
+            background: #ff0000;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .youtube-btn:hover {
+            background: #cc0000;
+            transform: scale(1.05);
+        }
+
+        .lyrics-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .lyrics-btn:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+
+        .sing-btn {
+            background: linear-gradient(45deg, #9c27b0, #673ab7);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .sing-btn:hover {
+            background: linear-gradient(45deg, #7b1fa2, #512da8);
+            transform: scale(1.05);
+        }
+
+        .lyrics-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .lyrics-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 3% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: white;
+        }
+
+        .lyrics-text {
+            white-space: pre-line;
+            line-height: 1.8;
+            font-size: 1.2em;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .singing-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        .singing-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 2% auto;
+            padding: 40px;
+            border-radius: 20px;
+            width: 95%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            text-align: center;
+        }
+
+        .current-line {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            animation: pulse 2s infinite;
+        }
+
+        .cheer {
+            font-size: 1.3em;
+            margin: 15px 0;
+            color: #ff6b6b;
+            animation: bounce 1s ease-in-out;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        .controls {
+            margin-top: 30px;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin: 0 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.6s ease both;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .song-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .song-buttons {
+                flex-direction: column;
+            }
+            
+            .lyrics-content, .singing-content {
+                margin: 5% auto;
+                width: 95%;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div id="welcomeScreen" class="welcome-screen">
+            <h1>🎵 Happy Voices Sing-Along 🎤</h1>
+            <p class="subtitle">Let's get to know you before we start singing! 🌟</p>
+            
+            <form id="userForm">
+                <div class="form-group">
+                    <label for="userName">What's your name? 👋</label>
+                    <input type="text" id="userName" placeholder="Enter your name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="userAge">How old are you? 🎂</label>
+                    <input type="number" id="userAge" min="1" max="120" placeholder="Enter your age" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="genreChoice">What type of songs do you like? 🎵</label>
+                    <select id="genreChoice" required>
+                        <option value="">Choose your favorite genre</option>
+                        <option value="1">Nursery Rhymes 🍼</option>
+                        <option value="2">Pop Songs 🎤</option>
+                        <option value="3">All Songs 🌈</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="start-btn">🎤 Start Singing!</button>
+            </form>
+        </div>
+
+        <!-- Main Content -->
+        <div id="mainContent" class="main-content">
+            <div class="user-info">
+                <h2>Welcome back, <span id="displayName"></span>! 🌟</h2>
+                <p>YouTube videos will help you sing along with the music! 🎵</p>
+            </div>
+            
+            <div id="songGrid" class="song-grid"></div>
+        </div>
+    </div>
+
+    <!-- Lyrics Modal -->
+    <div id="lyricsModal" class="lyrics-modal">
+        <div class="lyrics-content">
+            <span class="close" onclick="closeLyrics()">&times;</span>
+            <h2 id="lyricsTitle">Song Lyrics</h2>
+            <div id="lyricsText" class="lyrics-text"></div>
+        </div>
+    </div>
+
+    <!-- Singing Modal -->
+    <div id="singingModal" class="singing-modal">
+        <div class="singing-content">
+            <span class="close" onclick="closeSinging()">&times;</span>
+            <h2 id="singingTitle">🎤 Now Singing</h2>
+            
+            <div class="progress-bar">
+                <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+            </div>
+            
+            <div id="currentLine" class="current-line"></div>
+            <div id="cheer" class="cheer"></div>
+            
+            <div class="controls">
+                <button class="control-btn" onclick="pauseSinging()">⏸️ Pause</button>
+                <button class="control-btn" onclick="resumeSinging()">▶️ Resume</button>
+                <button class="control-btn" onclick="closeSinging()">❌ Stop</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Song data with YouTube links and lyrics
+        const songs = {
+            "Twinkle, Twinkle, Little Star": {
+                lyrics: [
+                    "Twinkle, twinkle, little star,",
+                    "How I wonder what you are!",
+                    "Up above the world so high,",
+                    "Like a diamond in the sky.",
+                    "Twinkle, twinkle, little star,",
+                    "How I wonder what you are!"
+                ],
+                youtube_url: "https://www.youtube.com/watch?v=yCjJyiqpAuU",
+                tempo: 2000,
+                description: "A classic nursery rhyme perfect for bedtime",
+                category: "nursery"
+            },
+            "Row, Row, Row Your Boat": {
+                lyrics: [
+                    "Row, row, row your boat,",
+                    "Gently down the stream.",
+                    "Merrily, merrily, merrily, merrily,",
+                    "Life is but a dream.",
+                    "",
+                    "Row, row, row your boat,",
+                    "Gently down the stream.",
+                    "If you see a crocodile,",
+                    "Don't forget to scream!"
+                ],
+                youtube_url: "https://www.youtube.com/watch?v=7otAJa3jui8",
+                tempo: 2000,
+                description: "A fun round song for everyone",
+                category: "nursery"
+            },
+            "Happy (Kid Version)": {
+                lyrics: [
+                    "It might seem crazy what I'm about to say,",
+                    "Sunshine she's here, you can take a break.",
+                    "I'm a hot air balloon that could go to space,",
+                    "With the air, like I don't care, baby, by the way.",
+                    "",
+                    "Because I'm happy!",
+                    "Clap along if you feel like a room without a roof.",
+                    "Because I'm happy!",
+                    "Clap along if you feel like happiness is the truth."
+                ],
+                youtube_url: "https://www.youtube.com/watch?v=y6Sxv-sUYtM",
+                tempo: 1800,
+                description: "A joyful song to make you smile",
+                category: "pop"
+            },
+            "Can't Stop the Feeling (Kid Version)": {
+                lyrics: [
+                    "I got this feeling inside my bones,",
+                    "It goes electric, wavey when I turn it on.",
+                    "All through my city, all through my home,",
+                    "We're flying up, no ceiling, when we in our zone.",
+                    "",
+                    "I got that sunshine in my pocket,",
+                    "Got that good soul in my feet.",
+                    "I feel that hot blood in my body when it drops,",
+                    "I can't take my eyes up off it, moving so phenomenally."
+                ],
+                youtube_url: "https://www.youtube.com/watch?v=ru0K8uYEZWw",
+                tempo: 1500,
+                description: "An energetic dance song for kids",
+                category: "pop"
+            },
+            "Baby Shark": {
+                lyrics: [
+                    "Baby shark, doo doo doo doo doo doo",
+                    "Baby shark, doo doo doo doo doo doo",
+                    "Baby shark, doo doo doo doo doo doo",
+                    "Baby shark!",
+                    "",
+                    "Mommy shark, doo doo doo doo doo doo",
+                    "Mommy shark, doo doo doo doo doo doo",
+                    "Mommy shark, doo doo doo doo doo doo",
+                    "Mommy shark!",
+                    "",
+                    "Daddy shark, doo doo doo doo doo doo",
+                    "Daddy shark, doo doo doo doo doo doo",
+                    "Daddy shark, doo doo doo doo doo doo",
+                    "Daddy shark!"
+                ],
+                youtube_url: "https://www.youtube.com/watch?v=XqZsoesa55w",
+                tempo: 1200,
+                description: "The viral family song everyone loves",
+                category: "nursery"
+            },
+            "Wheels on the Bus": {
+                lyrics: [
+                    "The wheels on the bus go round and round",
+                    "Round and round, round and round",
+                    "The wheels on the bus go round and round",
+                    "All through the town",
+                    "",
+                    "The wipers on the bus go swish, swish, swish",
+                    "Swish, swish, swish, swish, swish, swish",
+                    "The wipers on the bus go swish, swish, swish",
+                    "All through the town"
+                ],
+                youtube_url: "https://www.youtube.com/watch?v=gEiuLN2IQIk",
+                tempo: 2000,
+                description: "A classic children's song with actions",
+                category: "nursery"
+            }
+        };
+
+        const cheers = [
+            "Awesome singing! 🎉",
+            "You rock! 🌟",
+            "Superstar performance! ✨",
+            "Keep it up! 😃",
+            "Bravo! 👏",
+            "That was magical! 🪄",
+            "Sing it loud, sing it proud! 🎤",
+            "You make the song shine! ☀️",
+            "Fantastic job! 🥳",
+            "Way to go! 🚀"
+        ];
+
+        let currentUser = {};
+        let availableSongs = [];
+        let currentSong = null;
+        let currentLineIndex = 0;
+        let singingInterval = null;
+        let isPaused = false;
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('userForm').addEventListener('submit', handleUserSubmit);
+        });
+
+        function handleUserSubmit(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('userName').value.trim() || 'Friend';
+            const age = parseInt(document.getElementById('userAge').value);
+            const genre = document.getElementById('genreChoice').value;
+            
+            currentUser = { name, age, genre };
+            
+            // Filter songs based on genre
+            if (genre === '1') {
+                availableSongs = Object.keys(songs).filter(song => songs[song].category === 'nursery');
+            } else if (genre === '2') {
+                availableSongs = Object.keys(songs).filter(song => songs[song].category === 'pop');
+            } else {
+                availableSongs = Object.keys(songs);
+            }
+            
+            // Adjust tempo based on age
+            const tempoMultiplier = adjustTempoForAge(age);
+            availableSongs.forEach(songName => {
+                songs[songName].tempo *= tempoMultiplier;
+            });
+            
+            // Show main content
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            document.getElementById('displayName').textContent = name;
+            
+            // Display songs with animation
+            displaySongs();
+        }
+
+        function adjustTempoForAge(age) {
+            if (age < 5) return 1.5;
+            else if (age < 8) return 1.2;
+            else if (age < 12) return 1.0;
+            else return 0.8;
+        }
+
+        function displaySongs() {
+            const songGrid = document.getElementById('songGrid');
+            songGrid.innerHTML = '';
+            
+            availableSongs.forEach((songName, index) => {
+                const song = songs[songName];
+                const card = document.createElement('div');
+                card.className = 'song-card fade-in';
+                card.style.animationDelay = `${index * 0.1}s`;
+                
+                card.innerHTML = `
+                    <div class="song-title">${songName}</div>
+                    <div class="song-description">${song.description}</div>
+                    <div class="song-buttons">
+                        <a href="${song.youtube_url}" target="_blank" class="youtube-btn">🎬 Watch on YouTube</a>
+                        <button onclick="showLyrics('${songName}')" class="lyrics-btn">📝 Show Lyrics</button>
+                        <button onclick="startSinging('${songName}')" class="sing-btn">🎤 Sing Along</button>
+                    </div>
+                `;
+                
+                songGrid.appendChild(card);
+            });
+        }
+
+        function showLyrics(songName) {
+            const song = songs[songName];
+            document.getElementById('lyricsTitle').textContent = songName;
+            document.getElementById('lyricsText').textContent = song.lyrics.join('\n');
+            document.getElementById('lyricsModal').style.display = 'block';
+        }
+
+        function closeLyrics() {
+            document.getElementById('lyricsModal').style.display = 'none';
+        }
+
+        function startSinging(songName) {
+            currentSong = songs[songName];
+            currentLineIndex = 0;
+            isPaused = false;
+            
+            document.getElementById('singingTitle').textContent = `🎤 Now Singing: ${songName}`;
+            document.getElementById('singingModal').style.display = 'block';
+            
+            // Ask if user wants to open YouTube
+            if (confirm('Would you like to open the YouTube video to sing along?')) {
+                window.open(currentSong.youtube_url, '_blank');
+            }
+            
+            displayNextLine();
+        }
+
+        function displayNextLine() {
+            if (currentLineIndex >= currentSong.lyrics.length) {
+                // Song finished
+                document.getElementById('currentLine').textContent = '🎉 Congratulations! You finished the song! 🌈🎶';
+                document.getElementById('cheer').textContent = '🎉 CONGRATULATIONS! 🎉';
+                document.getElementById('progressFill').style.width = '100%';
+                return;
+            }
+            
+            const line = currentSong.lyrics[currentLineIndex];
+            const progress = ((currentLineIndex + 1) / currentSong.lyrics.length) * 100;
+            
+            document.getElementById('currentLine').textContent = line;
+            document.getElementById('progressFill').style.width = progress + '%';
+            
+            // Show random cheer
+            if (line.trim() !== '') {
+                const cheer = cheers[Math.floor(Math.random() * cheers.length)];
+                document.getElementById('cheer').textContent = cheer;
+            }
+            
+            currentLineIndex++;
+            
+            // Schedule next line
+            if (!isPaused) {
+                singingInterval = setTimeout(displayNextLine, currentSong.tempo);
+            }
+        }
+
+        function pauseSinging() {
+            isPaused = true;
+            if (singingInterval) {
+                clearTimeout(singingInterval);
+            }
+        }
+
+        function resumeSinging() {
+            isPaused = false;
+            displayNextLine();
+        }
+
+        function closeSinging() {
+            if (singingInterval) {
+                clearTimeout(singingInterval);
+            }
+            document.getElementById('singingModal').style.display = 'none';
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const lyricsModal = document.getElementById('lyricsModal');
+            const singingModal = document.getElementById('singingModal');
+            
+            if (event.target === lyricsModal) {
+                closeLyrics();
+            }
+            if (event.target === singingModal) {
+                closeSinging();
+            }
+        }
+    </script>
+</body>
+</html> 

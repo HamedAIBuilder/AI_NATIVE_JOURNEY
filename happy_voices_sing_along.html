@@ -1,0 +1,2094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎵 Happy Voices Sing-Along! 🎤</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            margin: 0;
+            padding: 10px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background elements */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: float 20s infinite linear;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.2);
+            text-align: center;
+            width: 95%;
+            max-width: 1200px;
+            position: relative;
+            overflow: hidden;
+            margin: 10px;
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        .left-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 300px;
+        }
+
+        .right-panel {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shine 3s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        h1 {
+            color: #ff6b6b;
+            font-size: clamp(1.8em, 3vw, 2.5em);
+            margin-bottom: 10px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24, #ff9ff3);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .subtitle {
+            color: #4ecdc4;
+            font-size: clamp(0.9em, 2vw, 1.2em);
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .song-selector {
+            margin: 15px 0;
+            padding: 15px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .song-selector label {
+            color: white;
+            font-size: clamp(0.9em, 2vw, 1.1em);
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px 15px;
+            font-size: clamp(0.8em, 1.8vw, 1em);
+            border-radius: 12px;
+            border: 3px solid #3498db;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .controls {
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: clamp(10px, 2vw, 15px) clamp(15px, 3vw, 25px);
+            font-size: clamp(0.8em, 2vw, 1.1em);
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            font-weight: bold;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-width: 100px;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+
+        button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-container {
+            margin: 15px 0;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 15px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #2ecc71, #27ae60, #16a085);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: progressShine 2s infinite;
+        }
+
+        @keyframes progressShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .lyrics-display {
+            background: linear-gradient(45deg, #ffecd2, #fcb69f, #ff9a9e);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 15px 0;
+            min-height: 200px;
+            max-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            font-size: clamp(1.1em, 2.5vw, 1.4em);
+            font-weight: bold;
+            color: #2c3e50;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lyrics-container {
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.5s ease;
+            min-height: 100%;
+        }
+
+        .lyric-line {
+            padding: 8px 0;
+            margin: 2px 0;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            opacity: 0.7;
+            transform: scale(0.95);
+        }
+
+        .lyric-line.current {
+            opacity: 1;
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.3);
+            padding: 12px 15px;
+            margin: 5px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .lyric-line.completed {
+            opacity: 0.8;
+            transform: scale(1);
+        }
+
+        .cheer-display {
+            background: linear-gradient(45deg, #a8edea, #fed6e3, #ffecd2);
+            border-radius: 15px;
+            padding: 12px;
+            margin: 10px 0;
+            font-size: clamp(0.9em, 2vw, 1.2em);
+            color: #e74c3c;
+            font-weight: bold;
+            opacity: 0;
+            transition: all 0.5s ease;
+            transform: scale(0.8);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .cheer-display.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .emoji {
+            font-size: 1.8em;
+            margin: 0 8px;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .music-notes {
+            position: absolute;
+            font-size: 2em;
+            color: rgba(255, 255, 255, 0.3);
+            animation: floatNote 4s infinite linear;
+            pointer-events: none;
+        }
+
+        .music-notes:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+        .music-notes:nth-child(2) { top: 20%; right: 15%; animation-delay: 1s; }
+        .music-notes:nth-child(3) { bottom: 30%; left: 20%; animation-delay: 2s; }
+        .music-notes:nth-child(4) { bottom: 20%; right: 10%; animation-delay: 3s; }
+
+        @keyframes floatNote {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        /* Landscape-first responsive design */
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+                max-width: 900px;
+                gap: 15px;
+            }
+            
+            .left-panel, .right-panel {
+                min-width: auto;
+            }
+            
+            .lyrics-display {
+                min-height: 150px;
+                max-height: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+            
+            .container {
+                width: 98%;
+                padding: 15px;
+                margin: 5px;
+                border-radius: 15px;
+                flex-direction: column;
+            }
+            
+            .back-home-btn {
+                position: relative;
+                top: auto;
+                left: auto;
+                margin-bottom: 15px;
+                align-self: flex-start;
+            }
+            
+            .controls {
+                flex-direction: row;
+                gap: 10px;
+            }
+            
+            button {
+                width: auto;
+                max-width: none;
+            }
+            
+            .lyrics-display {
+                min-height: 120px;
+                max-height: 200px;
+                padding: 15px;
+                font-size: clamp(1em, 3vw, 1.3em);
+            }
+            
+            .song-selector {
+                padding: 12px;
+            }
+            
+            .progress-container {
+                padding: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                width: 100%;
+                padding: 10px;
+                margin: 0;
+                border-radius: 10px;
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: clamp(1.5em, 4vw, 2em);
+            }
+            
+            .subtitle {
+                font-size: clamp(0.8em, 3vw, 1em);
+            }
+            
+            .lyrics-display {
+                min-height: 100px;
+                max-height: 150px;
+                padding: 12px;
+                font-size: clamp(0.9em, 3.5vw, 1.2em);
+            }
+            
+            .cheer-display {
+                padding: 10px;
+                font-size: clamp(0.8em, 2.5vw, 1em);
+            }
+            
+            .song-selector {
+                padding: 10px;
+            }
+            
+            .song-selector label {
+                font-size: clamp(0.8em, 2.5vw, 1em);
+            }
+            
+            select {
+                padding: 8px 12px;
+                font-size: clamp(0.7em, 2.5vw, 0.9em);
+            }
+            
+            button {
+                padding: 8px 15px;
+                font-size: clamp(0.8em, 2.5vw, 1em);
+                min-width: 80px;
+            }
+        }
+
+        /* Portrait orientation override for mobile */
+        @media (max-width: 768px) and (orientation: portrait) {
+            .container {
+                flex-direction: column;
+                max-width: 500px;
+            }
+            
+            .lyrics-display {
+                min-height: 150px;
+                max-height: 200px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 100%;
+                max-width: 250px;
+            }
+        }
+
+        /* High DPI displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .container {
+                border-radius: 25px;
+            }
+            
+            button {
+                border-radius: 25px;
+            }
+        }
+
+        /* Touch-friendly improvements */
+        @media (hover: none) and (pointer: coarse) {
+            button {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            select {
+                min-height: 44px;
+            }
+            
+            .back-home-btn {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
+
+        .back-home-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: linear-gradient(45deg, #4ecdc4, #ff6b6b);
+            color: white;
+            border: none;
+            padding: 6px 15px;
+            font-size: clamp(0.7em, 1.8vw, 0.9em);
+            border-radius: 15px;
+            cursor: pointer;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        .back-home-btn:hover {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Interactive hover effects */
+        select:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            border-color: #e74c3c;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #e74c3c;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+            animation: buttonPulse 0.6s ease-in-out;
+        }
+
+        button:active {
+            transform: translateY(-1px) scale(1.02);
+            animation: buttonClick 0.2s ease-in-out;
+        }
+
+        @keyframes buttonPulse {
+            0%, 100% { transform: translateY(-3px) scale(1.05); }
+            50% { transform: translateY(-3px) scale(1.08); }
+        }
+
+        @keyframes buttonClick {
+            0% { transform: translateY(-1px) scale(1.02); }
+            50% { transform: translateY(-1px) scale(0.98); }
+            100% { transform: translateY(-1px) scale(1.02); }
+        }
+
+        /* Interactive lyrics display */
+        .lyrics-display {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lyrics-display:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .lyric-line {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .lyric-line:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.4);
+            padding: 15px 20px;
+            margin: 8px 0;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .lyric-line.current {
+            animation: currentLineGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes currentLineGlow {
+            0%, 100% { 
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                transform: scale(1.05);
+            }
+            50% { 
+                box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+                transform: scale(1.08);
+            }
+        }
+
+        /* Interactive progress bar */
+        .progress-bar {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .progress-bar:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .progress-fill {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .progress-fill::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            animation: progressShine 2s infinite;
+            border-radius: 10px;
+        }
+
+        /* Interactive song selector */
+        .song-selector {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .song-selector:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Interactive cheer display */
+        .cheer-display {
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+
+        .cheer-display:hover {
+            transform: scale(1.05) rotate(2deg);
+        }
+
+        .cheer-display.show {
+            animation: cheerBounce 0.8s ease-in-out;
+        }
+
+        @keyframes cheerBounce {
+            0% { transform: scale(0.8) rotate(-5deg); }
+            50% { transform: scale(1.1) rotate(5deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        /* Interactive back button */
+        .back-home-btn:hover {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            animation: backButtonGlow 1s ease-in-out infinite;
+        }
+
+        @keyframes backButtonGlow {
+            0%, 100% { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); }
+            50% { box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3); }
+        }
+
+        /* Particle effects */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: floatParticle 3s ease-in-out infinite;
+        }
+
+        @keyframes floatParticle {
+            0% { 
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { 
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Interactive title */
+        h1:hover {
+            transform: scale(1.05);
+            animation: titleRainbow 2s ease-in-out infinite;
+        }
+
+        @keyframes titleRainbow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        /* Interactive subtitle */
+        .subtitle:hover {
+            transform: scale(1.1);
+            color: #ff6b6b;
+        }
+
+        /* Loading animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.show {
+            display: block;
+            animation: loadingPulse 1s ease-in-out infinite;
+        }
+
+        @keyframes loadingPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Success animation */
+        .success-animation {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(46, 204, 113, 0.9);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+            z-index: 1000;
+            display: none;
+            animation: successPop 0.5s ease-in-out;
+        }
+
+        .success-animation.show {
+            display: block;
+        }
+
+        @keyframes successPop {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* Interactive container */
+        .container:hover {
+            transform: scale(1.01);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Music note animations */
+        .music-notes:hover {
+            transform: scale(1.5) rotate(15deg);
+            animation: musicNoteBounce 0.5s ease-in-out;
+        }
+
+        @keyframes musicNoteBounce {
+            0%, 100% { transform: scale(1.5) rotate(15deg); }
+            50% { transform: scale(1.8) rotate(30deg); }
+        }
+
+        /* Interactive panels */
+        .left-panel:hover {
+            transform: translateX(5px);
+        }
+
+        .right-panel:hover {
+            transform: translateX(-5px);
+        }
+
+        /* Ripple effect for buttons */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating music notes -->
+    <div class="music-notes">🎵</div>
+    <div class="music-notes">🎶</div>
+    <div class="music-notes">🎤</div>
+    <div class="music-notes">🎸</div>
+
+    <div class="particles" id="particles"></div>
+    <div class="success-animation" id="successAnimation">🎉 Great singing! 🎉</div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🎵 Happy Voices Sing-Along! 🎵</h1>
+            <p class="subtitle">Let's make music together!</p>
+        </div>
+
+        <div class="main-content">
+            <div class="left-panel">
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="songSelect">Choose a Song:</label>
+                        <select id="songSelect" class="song-selector">
+                            <option value="">Select a song...</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <button id="startBtn" class="control-btn">🎤 Start Singing!</button>
+                        <button id="pauseBtn" class="control-btn">⏸️ Pause</button>
+                        <button id="stopBtn" class="control-btn">⏹️ Stop</button>
+                    </div>
+
+                    <div class="control-group">
+                        <button id="cheerBtn" class="control-btn">🎉 Give Cheer!</button>
+                        <button id="backHomeBtn" class="control-btn back-home-btn">🏠 Back to Home</button>
+                    </div>
+
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progressBar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <div class="progress-text" id="progressText">0%</div>
+                    </div>
+
+                    <div class="loading" id="loading">🎵 Loading song... 🎵</div>
+                </div>
+
+                <div class="cheer-display" id="cheerDisplay"></div>
+            </div>
+
+            <div class="right-panel">
+                <div class="lyrics-container">
+                    <h3>📝 Lyrics</h3>
+                    <div class="lyrics-display" id="lyricsDisplay">
+                        <p>Select a song to start singing!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Key data: Songs and Cheers (same as Python version)
+        const SONGS = {
+            "Twinkle, Twinkle, Little Star": [
+                "Twinkle, twinkle, little star",
+                "How I wonder what you are",
+                "Up above the world so high",
+                "Like a diamond in the sky",
+                "Twinkle, twinkle, little star",
+                "How I wonder what you are"
+            ],
+            "Row, Row, Row Your Boat": [
+                "Row, row, row your boat",
+                "Gently down the stream",
+                "Merrily, merrily, merrily, merrily",
+                "Life is but a dream",
+                "Row, row, row your boat",
+                "Gently down the stream",
+                "Merrily, merrily, merrily, merrily",
+                "Life is but a dream"
+            ],
+            "The Wheels on the Bus": [
+                "The wheels on the bus go round and round",
+                "Round and round, round and round",
+                "The wheels on the bus go round and round",
+                "All through the town",
+                "",
+                "The wipers on the bus go swish, swish, swish",
+                "Swish, swish, swish, swish, swish, swish",
+                "The wipers on the bus go swish, swish, swish",
+                "All through the town",
+                "",
+                "The horn on the bus goes beep, beep, beep",
+                "Beep, beep, beep, beep, beep, beep",
+                "The horn on the bus goes beep, beep, beep",
+                "All through the town",
+                "",
+                "The people on the bus go up and down",
+                "Up and down, up and down",
+                "The people on the bus go up and down",
+                "All through the town"
+            ],
+            "Old MacDonald Had a Farm": [
+                "Old MacDonald had a farm",
+                "E-I-E-I-O",
+                "And on his farm he had a cow",
+                "E-I-E-I-O",
+                "With a moo moo here",
+                "And a moo moo there",
+                "Here a moo, there a moo",
+                "Everywhere a moo moo",
+                "Old MacDonald had a farm",
+                "E-I-E-I-O",
+                "",
+                "Old MacDonald had a farm",
+                "E-I-E-I-O",
+                "And on his farm he had a pig",
+                "E-I-E-I-O",
+                "With an oink oink here",
+                "And an oink oink there",
+                "Here an oink, there an oink",
+                "Everywhere an oink oink",
+                "Old MacDonald had a farm",
+                "E-I-E-I-O"
+            ],
+            "If You're Happy and You Know It": [
+                "If you're happy and you know it, clap your hands",
+                "If you're happy and you know it, clap your hands",
+                "If you're happy and you know it, then your face will surely show it",
+                "If you're happy and you know it, clap your hands",
+                "",
+                "If you're happy and you know it, stomp your feet",
+                "If you're happy and you know it, stomp your feet",
+                "If you're happy and you know it, then your face will surely show it",
+                "If you're happy and you know it, stomp your feet",
+                "",
+                "If you're happy and you know it, shout hooray",
+                "If you're happy and you know it, shout hooray",
+                "If you're happy and you know it, then your face will surely show it",
+                "If you're happy and you know it, shout hooray"
+            ],
+            "Baa Baa Black Sheep": [
+                "Baa, baa, black sheep, have you any wool?",
+                "Yes sir, yes sir, three bags full",
+                "One for the master, one for the dame",
+                "And one for the little boy who lives down the lane",
+                "Baa, baa, black sheep, have you any wool?",
+                "Yes sir, yes sir, three bags full"
+            ],
+            "Mary Had a Little Lamb": [
+                "Mary had a little lamb",
+                "Its fleece was white as snow",
+                "And everywhere that Mary went",
+                "The lamb was sure to go",
+                "It followed her to school one day",
+                "Which was against the rule",
+                "It made the children laugh and play",
+                "To see a lamb at school",
+                "And so the teacher turned it out",
+                "But still it lingered near",
+                "And waited patiently about",
+                "Till Mary did appear"
+            ],
+            "The Itsy Bitsy Spider": [
+                "The itsy bitsy spider climbed up the water spout",
+                "Down came the rain and washed the spider out",
+                "Out came the sun and dried up all the rain",
+                "And the itsy bitsy spider climbed up the spout again"
+            ],
+            "Head, Shoulders, Knees and Toes": [
+                "Head, shoulders, knees and toes, knees and toes",
+                "Head, shoulders, knees and toes, knees and toes",
+                "And eyes and ears and mouth and nose",
+                "Head, shoulders, knees and toes, knees and toes"
+            ],
+            "The Alphabet Song": [
+                "A, B, C, D, E, F, G",
+                "H, I, J, K, L, M, N, O, P",
+                "Q, R, S, T, U, V",
+                "W, X, Y and Z",
+                "Now I know my ABCs",
+                "Next time won't you sing with me?",
+                "",
+                "A, B, C, D, E, F, G",
+                "H, I, J, K, L, M, N, O, P",
+                "Q, R, S, T, U, V",
+                "W, X, Y and Z",
+                "Now I know my ABCs",
+                "Next time won't you sing with me?"
+            ],
+            "Five Little Ducks": [
+                "Five little ducks went out one day",
+                "Over the hill and far away",
+                "Mother duck said, 'Quack, quack, quack, quack'",
+                "But only four little ducks came back",
+                "",
+                "Four little ducks went out one day",
+                "Over the hill and far away",
+                "Mother duck said, 'Quack, quack, quack, quack'",
+                "But only three little ducks came back",
+                "",
+                "Three little ducks went out one day",
+                "Over the hill and far away",
+                "Mother duck said, 'Quack, quack, quack, quack'",
+                "But only two little ducks came back",
+                "",
+                "Two little ducks went out one day",
+                "Over the hill and far away",
+                "Mother duck said, 'Quack, quack, quack, quack'",
+                "But only one little duck came back",
+                "",
+                "One little duck went out one day",
+                "Over the hill and far away",
+                "Mother duck said, 'Quack, quack, quack, quack'",
+                "But no little ducks came swimming back",
+                "",
+                "Sad mother duck went out one day",
+                "Over the hill and far away",
+                "Mother duck said, 'Quack, quack, quack, quack'",
+                "And all of the five little ducks came back"
+            ],
+            "Five Little Monkeys": [
+                "Five little monkeys jumping on the bed",
+                "One fell off and bumped his head",
+                "Mama called the doctor and the doctor said",
+                "'No more monkeys jumping on the bed!'",
+                "",
+                "Four little monkeys jumping on the bed",
+                "One fell off and bumped his head",
+                "Mama called the doctor and the doctor said",
+                "'No more monkeys jumping on the bed!'",
+                "",
+                "Three little monkeys jumping on the bed",
+                "One fell off and bumped his head",
+                "Mama called the doctor and the doctor said",
+                "'No more monkeys jumping on the bed!'",
+                "",
+                "Two little monkeys jumping on the bed",
+                "One fell off and bumped his head",
+                "Mama called the doctor and the doctor said",
+                "'No more monkeys jumping on the bed!'",
+                "",
+                "One little monkey jumping on the bed",
+                "He fell off and bumped his head",
+                "Mama called the doctor and the doctor said",
+                "'No more monkeys jumping on the bed!'",
+                "",
+                "No little monkeys jumping on the bed",
+                "None fell off and bumped their head",
+                "Mama called the doctor and the doctor said",
+                "'Put those monkeys back in bed!'"
+            ],
+            "London Bridge Is Falling Down": [
+                "London Bridge is falling down",
+                "Falling down, falling down",
+                "London Bridge is falling down",
+                "My fair lady",
+                "",
+                "Build it up with wood and clay",
+                "Wood and clay, wood and clay",
+                "Build it up with wood and clay",
+                "My fair lady",
+                "",
+                "Wood and clay will wash away",
+                "Wash away, wash away",
+                "Wood and clay will wash away",
+                "My fair lady",
+                "",
+                "Build it up with bricks and mortar",
+                "Bricks and mortar, bricks and mortar",
+                "Build it up with bricks and mortar",
+                "My fair lady",
+                "",
+                "Bricks and mortar will not stay",
+                "Will not stay, will not stay",
+                "Bricks and mortar will not stay",
+                "My fair lady",
+                "",
+                "Build it up with iron and steel",
+                "Iron and steel, iron and steel",
+                "Build it up with iron and steel",
+                "My fair lady",
+                "",
+                "Iron and steel will bend and bow",
+                "Bend and bow, bend and bow",
+                "Iron and steel will bend and bow",
+                "My fair lady",
+                "",
+                "Build it up with silver and gold",
+                "Silver and gold, silver and gold",
+                "Build it up with silver and gold",
+                "My fair lady",
+                "",
+                "Silver and gold will be stolen away",
+                "Stolen away, stolen away",
+                "Silver and gold will be stolen away",
+                "My fair lady",
+                "",
+                "Set a man to watch all night",
+                "Watch all night, watch all night",
+                "Set a man to watch all night",
+                "My fair lady",
+                "",
+                "Suppose the man should fall asleep",
+                "Fall asleep, fall asleep",
+                "Suppose the man should fall asleep",
+                "My fair lady",
+                "",
+                "Give him a pipe to smoke all night",
+                "Smoke all night, smoke all night",
+                "Give him a pipe to smoke all night",
+                "My fair lady"
+            ],
+            "Happy (Kid Version)": [
+                "It might seem crazy what I'm about to say",
+                "Sunshine she's here, you can take a break",
+                "I'm a hot air balloon that could go to space",
+                "With the air, like I don't care, baby, by the way",
+                "",
+                "Because I'm happy",
+                "Clap along if you feel like a room without a roof",
+                "Because I'm happy",
+                "Clap along if you feel like happiness is the truth",
+                "Because I'm happy",
+                "Clap along if you know what happiness is to you",
+                "Because I'm happy",
+                "Clap along if you feel like that's what you wanna do",
+                "",
+                "Here come bad news talking this and that",
+                "Well, give me all you got, and don't hold it back",
+                "Well, I should probably warn you I'll be just fine",
+                "No offense to you, don't waste your time",
+                "Here's why",
+                "",
+                "Because I'm happy",
+                "Clap along if you feel like a room without a roof",
+                "Because I'm happy",
+                "Clap along if you feel like happiness is the truth",
+                "Because I'm happy",
+                "Clap along if you know what happiness is to you",
+                "Because I'm happy",
+                "Clap along if you feel like that's what you wanna do"
+            ],
+            "Can't Stop the Feeling (Kid Version)": [
+                "I got this feeling inside my bones",
+                "It goes electric, wavey when I turn it on",
+                "All through my city, all through my home",
+                "We're flying up, no ceiling, when we in our zone",
+                "",
+                "I got that sunshine in my pocket",
+                "Got that good soul in my feet",
+                "I feel that hot blood in my body when it drops",
+                "I can't take my eyes up off it, moving so phenomenally",
+                "Room on lock the way we rock it, so don't stop",
+                "",
+                "And under the lights when everything goes",
+                "Nowhere to hide when I'm getting you close",
+                "When we move, well, you already know",
+                "So just imagine, just imagine, just imagine",
+                "Nothing I can see but you when you dance, dance, dance",
+                "Feeling good, good, creeping up on you",
+                "So just dance, dance, dance, come on",
+                "All those things I shouldn't do",
+                "But you dance, dance, dance",
+                "And ain't nobody leaving soon, so keep dancing",
+                "I can't stop the feeling",
+                "So just dance, dance, dance",
+                "I can't stop the feeling",
+                "So just dance, dance, dance, come on"
+            ],
+            "Uptown Funk (Kid Version)": [
+                "This hit, that ice cold",
+                "Michelle Pfeiffer, that white gold",
+                "This one for them hood girls",
+                "Them good girls straight masterpieces",
+                "Stylin', whilen, livin' it up in the city",
+                "Got chucks on with Saint Laurent",
+                "Gotta kiss myself, I'm so pretty",
+                "",
+                "I'm too hot (hot damn)",
+                "Called a police and a fireman",
+                "I'm too hot (hot damn)",
+                "Make a dragon wanna retire man",
+                "I'm too hot (hot damn)",
+                "Say my name you know who I am",
+                "I'm too hot (hot damn)",
+                "And my band 'bout that money, break it down",
+                "",
+                "Girls hit your hallelujah (whoo)",
+                "Girls hit your hallelujah (whoo)",
+                "Girls hit your hallelujah (whoo)",
+                "'Cause uptown funk gon' give it to you",
+                "'Cause uptown funk gon' give it to you",
+                "'Cause uptown funk gon' give it to you",
+                "Saturday night and we in the spot",
+                "Don't believe me just watch (come on)"
+            ],
+            "Shake It Off (Kid Version)": [
+                "I stay out too late",
+                "Got nothing in my brain",
+                "That's what people say, mmm-mmm",
+                "That's what people say, mmm-mmm",
+                "",
+                "I go on too many dates",
+                "But I can't make 'em stay",
+                "At least that's what people say, mmm-mmm",
+                "That's what people say, mmm-mmm",
+                "",
+                "But I keep cruising",
+                "Can't stop, won't stop moving",
+                "It's like I got this music in my mind",
+                "Saying it's gonna be alright",
+                "",
+                "'Cause the players gonna play, play, play, play, play",
+                "And the haters gonna hate, hate, hate, hate, hate",
+                "Baby, I'm just gonna shake, shake, shake, shake, shake",
+                "I shake it off, I shake it off",
+                "",
+                "Heart-breakers gonna break, break, break, break, break",
+                "And the fakers gonna fake, fake, fake, fake, fake",
+                "Baby, I'm just gonna shake, shake, shake, shake, shake",
+                "I shake it off, I shake it off",
+                "",
+                "I never miss a beat",
+                "I'm lightning on my feet",
+                "And that's what they don't see, mmm-mmm",
+                "That's what they don't see, mmm-mmm",
+                "",
+                "I'm dancing on my own",
+                "I make the moves up as I go",
+                "And that's what they don't know, mmm-mmm",
+                "That's what they don't know, mmm-mmm"
+            ],
+            "Despacito (Kid Version)": [
+                "Sí, sabes que ya llevo un rato mirándote",
+                "Tengo que bailar contigo hoy (DY)",
+                "Vi que tu mirada ya estaba llamándome",
+                "Muéstrame el camino que yo voy (Oh)",
+                "",
+                "Tú, tú eres el imán y yo soy el metal",
+                "Me voy acercando y voy armando el plan",
+                "Solo con pensarlo se acelera el pulso (Oh yeah)",
+                "",
+                "Ya, ya me está gustando más de lo normal",
+                "Todos mis sentidos van pidiendo más",
+                "Esto hay que tomarlo sin ningún apuro",
+                "",
+                "Despacito",
+                "Quiero respirar tu cuello despacito",
+                "Deja que te diga cosas al oído",
+                "Para que te acuerdes si no estás conmigo",
+                "",
+                "Despacito",
+                "Quiero desnudarte a besos despacito",
+                "Firmo en las paredes de tu laberinto",
+                "Y hacer de tu cuerpo todo un manuscrito",
+                "",
+                "Sube, sube, sube (Sube, sube)",
+                "Sube, sube (Sube, sube)",
+                "Sube, sube, sube (Sube, sube)",
+                "Sube, sube (Sube, sube)"
+            ],
+            "Shape of You (Kid Version)": [
+                "The club isn't the best place to find a lover",
+                "So the bar is where I go",
+                "Me and my friends at the table doing shots",
+                "Drinking fast and then we talk slow",
+                "And you come over and start up a conversation with just me",
+                "And trust me I'll give it a chance now",
+                "",
+                "Take my hand, stop, put Van the Man on the jukebox",
+                "And then we start to dance, and now I'm singing like",
+                "",
+                "Girl, you know I want your love",
+                "Your love was handmade for somebody like me",
+                "Come on now, follow my lead",
+                "I may be crazy, don't mind me",
+                "Say, boy, let's not talk too much",
+                "Grab on my waist and put that body on me",
+                "Come on now, follow my lead",
+                "Come, come on now, follow my lead",
+                "",
+                "I'm in love with the shape of you",
+                "We push and pull like a magnet do",
+                "Although my heart is falling too",
+                "I'm in love with your body",
+                "And last night you were in my room",
+                "And now my bedsheets smell like you",
+                "Every day discovering something brand new",
+                "I'm in love with your body"
+            ],
+            "One Love (Kid Version)": [
+                "One love, one heart",
+                "Let's get together and feel all right",
+                "Hear the children crying (One love)",
+                "Hear the children crying (One heart)",
+                "Sayin', 'Give thanks and praise to the Lord and I will feel all right'",
+                "Sayin', 'Let's get together and feel all right'",
+                "Whoa, whoa, whoa, whoa",
+                "",
+                "Let them all pass all their dirty remarks (One love)",
+                "There is one question I'd really love to ask (One heart)",
+                "Is there a place for the hopeless sinner",
+                "Who has hurt all mankind just to save his own?",
+                "Believe me",
+                "",
+                "One love, one heart",
+                "Let's get together and feel all right",
+                "As it was in the beginning (One love)",
+                "So shall it be in the end (One heart)",
+                "All right, give thanks and praise to the Lord and I will feel all right",
+                "Let's get together and feel all right",
+                "One more thing",
+                "",
+                "Let's get together to fight this Holy Armageddon (One love)",
+                "So when the Man comes there will be no, no doom (One song)",
+                "Have pity on those whose chances grow thinner",
+                "There ain't no hiding place from the Father of Creation",
+                "",
+                "Sayin', 'One love, one heart'",
+                "Let's get together and feel all right",
+                "I'm pleading to mankind (One love)",
+                "Oh, Lord (One heart)",
+                "Give thanks and praise to the Lord and I will feel all right",
+                "Let's get together and feel all right"
+            ],
+            "Three Little Birds (Kid Version)": [
+                "Don't worry about a thing",
+                "'Cause every little thing gonna be all right",
+                "Singin', 'Don't worry about a thing'",
+                "'Cause every little thing gonna be all right'",
+                "",
+                "Rise up this mornin'",
+                "Smiled with the risin' sun",
+                "Three little birds",
+                "Pitch by my doorstep",
+                "Singin' sweet songs",
+                "Of melodies pure and true",
+                "Sayin', 'This is my message to you-ou-ou'",
+                "",
+                "Singin', 'Don't worry 'bout a thing'",
+                "'Cause every little thing gonna be all right'",
+                "Singin', 'Don't worry (don't worry) 'bout a thing'",
+                "'Cause every little thing gonna be all right'",
+                "",
+                "Rise up this mornin'",
+                "Smiled with the risin' sun",
+                "Three little birds",
+                "Pitch by my doorstep",
+                "Singin' sweet songs",
+                "Of melodies pure and true",
+                "Sayin', 'This is my message to you-ou-ou'",
+                "",
+                "Singin', 'Don't worry about a thing, worry about a thing, oh!",
+                "Every little thing gonna be all right, don't worry!",
+                "Singin', 'Don't worry about a thing'",
+                "'Cause every little thing gonna be all right'",
+                "Singin', 'Don't worry about a thing, oh no!",
+                "'Cause every little thing gonna be all right!'"
+            ],
+            "Waka Waka (Kid Version)": [
+                "You're a good soldier,",
+                "Choosing your battles.",
+                "Pick yourself up and dust yourself off and back in the saddle.",
+                "You're on the front line.",
+                "Everyone's watching.",
+                "You know it's serious, we're getting closer, this isn't over.",
+                "",
+                "The pressure is on, you feel it.",
+                "But you've got it all, believe it.",
+                "When you fall get up, oh oh.",
+                "And if you fall get up, eh eh.",
+                "Tsamina mina zangalewa.",
+                "This time for Africa.",
+                "",
+                "Listen to your God, this is our motto.",
+                "Your time to shine, don't wait in line.",
+                "Y vamos por todo.",
+                "People are raising their expectations.",
+                "Go on and feed them, this is your moment, no hesitations.",
+                "",
+                "Today's your day, I feel it.",
+                "You paved the way, believe it.",
+                "If you get down get up, oh oh.",
+                "When you get down get up, eh eh.",
+                "Tsamina mina zangalewa.",
+                "This time for Africa."
+            ]
+        };
+
+        const CHEERS = [
+            "Awesome singing! 🎉",
+            "You rock! 🌟",
+            "Superstar performance! ✨",
+            "Keep it up! 😃",
+            "Bravo! 👏",
+            "That was magical! 🪄",
+            "Sing it loud, sing it proud! 🎤",
+            "You make the song shine! ☀️",
+            "Fantastic job! 🥳",
+            "Way to go! 🚀"
+        ];
+
+        const COLORS = [
+            '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff', '#5f27cd'
+        ];
+
+        let currentInterval;
+        let currentLyricIndex = 0;
+        // let isPlaying = false; // Removed to avoid redeclaration
+
+        function loadSongLyrics(songTitle = null) {
+            if (songTitle === null) {
+                songTitle = Object.keys(SONGS)[0];
+            }
+            return SONGS[songTitle];
+        }
+
+        function generateCheer() {
+            return CHEERS[Math.floor(Math.random() * CHEERS.length)];
+        }
+
+        function getRandomColor() {
+            return COLORS[Math.floor(Math.random() * COLORS.length)];
+        }
+
+        function displayLyricsWithPacing(lyricsList, pauseSeconds = 2000) {
+            const lyricsContainer = document.getElementById('lyricsContainer');
+            const cheerDisplay = document.getElementById('cheerDisplay');
+            const progressFill = document.getElementById('progressFill');
+            
+            currentLyricIndex = 0;
+            
+            // Clear previous lyrics and initialize
+            lyricsContainer.innerHTML = '';
+            
+            // Pre-populate with empty lines for spacing
+            for (let i = 0; i < 5; i++) {
+                const emptyLine = document.createElement('div');
+                emptyLine.className = 'lyric-line';
+                emptyLine.textContent = '';
+                lyricsContainer.appendChild(emptyLine);
+            }
+            
+            function showNextLine() {
+                if (currentLyricIndex < lyricsList.length && isPlaying) {
+                    const currentLine = lyricsList[currentLyricIndex];
+                    
+                    // Skip empty lines but still count them
+                    if (currentLine.trim() === '') {
+                        currentLyricIndex++;
+                        if (currentLyricIndex < lyricsList.length) {
+                            currentInterval = setTimeout(showNextLine, 500); // Shorter pause for empty lines
+                        } else {
+                            finishSong();
+                        }
+                        return;
+                    }
+                    
+                    // Create new lyric line element
+                    const lyricLine = document.createElement('div');
+                    lyricLine.className = 'lyric-line current';
+                    lyricLine.textContent = currentLine;
+                    lyricLine.style.color = getRandomColor();
+                    
+                    // Add to container
+                    lyricsContainer.appendChild(lyricLine);
+                    
+                    // Update progress
+                    const progress = ((currentLyricIndex + 1) / lyricsList.length) * 100;
+                    progressFill.style.width = progress + '%';
+                    
+                    // Scroll to show the new line
+                    setTimeout(() => {
+                        lyricLine.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                    }, 100);
+                    
+                    // Show cheer after a short delay
+                    setTimeout(() => {
+                        if (isPlaying) {
+                            cheerDisplay.textContent = generateCheer();
+                            cheerDisplay.style.color = lyricLine.style.color;
+                            cheerDisplay.classList.add('show');
+                            
+                            // Hide cheer after 1.2 seconds
+                            setTimeout(() => {
+                                cheerDisplay.classList.remove('show');
+                            }, 1200);
+                        }
+                    }, 1000);
+                    
+                    // Mark current line as completed after a delay
+                    setTimeout(() => {
+                        lyricLine.classList.remove('current');
+                        lyricLine.classList.add('completed');
+                    }, 1500);
+                    
+                    currentLyricIndex++;
+                    
+                    // Schedule next line
+                    if (currentLyricIndex < lyricsList.length) {
+                        currentInterval = setTimeout(showNextLine, pauseSeconds);
+                    } else {
+                        finishSong();
+                    }
+                }
+            }
+            
+            function finishSong() {
+                setTimeout(() => {
+                    if (isPlaying) {
+                        // Get user name for personalization
+                        const userName = localStorage.getItem('userName') || 'Friend';
+                        
+                        // Final progress update
+                        progressFill.style.width = '100%';
+                        
+                        // Show completion message
+                        const completionLine = document.createElement('div');
+                        completionLine.className = 'lyric-line current';
+                        completionLine.textContent = `🎉 Great job, ${userName}! You finished the song! You're a singing superstar! 🌈🎶`;
+                        completionLine.style.color = '#2ecc71';
+                        completionLine.style.fontSize = '1.2em';
+                        lyricsContainer.appendChild(completionLine);
+                        
+                        // Show final celebration
+                        cheerDisplay.textContent = `🎉 CONGRATULATIONS, ${userName}! 🎉`;
+                        cheerDisplay.style.color = '#e74c3c';
+                        cheerDisplay.classList.add('show');
+                        
+                        // Keep final cheer visible longer
+                        setTimeout(() => {
+                            cheerDisplay.classList.remove('show');
+                            
+                            // Reset controls after celebration
+                            setTimeout(() => {
+                                document.getElementById('startBtn').disabled = false;
+                                document.getElementById('stopBtn').disabled = true;
+                                isPlaying = false;
+                                
+                                // Reset display for next song
+                                lyricsContainer.innerHTML = `<div class="lyric-line">Ready to sing another song, ${userName}? Click "Start Singing!" to begin! 🎶</div>`;
+                            }, 1000);
+                        }, 3000);
+                    }
+                }, 1000);
+            }
+            
+            showNextLine();
+        }
+
+        function startSingAlong() {
+            const songSelect = document.getElementById('songSelect');
+            const selectedSong = songSelect.value;
+            const lyrics = loadSongLyrics(selectedSong);
+            
+            // Get user data for personalization
+            const userName = localStorage.getItem('userName') || 'Friend';
+            const userAge = localStorage.getItem('userAge') || '5';
+            const pacing = getPacingForAge(parseInt(userAge));
+            
+            isPlaying = true;
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = false;
+            
+            // Reset progress
+            document.getElementById('progressFill').style.width = '0%';
+            
+            // Use personalized pacing
+            displayLyricsWithPacing(lyrics, pacing);
+        }
+
+        function stopSingAlong() {
+            isPlaying = false;
+            if (currentInterval) {
+                clearTimeout(currentInterval);
+            }
+            
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            
+            const lyricsContainer = document.getElementById('lyricsContainer');
+            const cheerDisplay = document.getElementById('cheerDisplay');
+            
+            lyricsContainer.innerHTML = '<div class="lyric-line">Ready to sing? Click "Start Singing!" to begin! 🎶</div>';
+            cheerDisplay.classList.remove('show');
+            
+            // Reset progress
+            document.getElementById('progressFill').style.width = '0%';
+        }
+
+        // Add interactive hover effects
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-3px) scale(1.05)';
+                });
+                button.addEventListener('mouseleave', function() {
+                    if (!this.disabled) {
+                        this.style.transform = 'translateY(0) scale(1)';
+                    }
+                });
+            });
+            
+            // Initialize personalized experience
+            main_sing_along_loop();
+        });
+
+        // 4. Orchestrator
+        function main_sing_along_loop() {
+            /**
+             * Coordinates the sing-along experience.
+             */
+            // Get user data from localStorage
+            const userName = localStorage.getItem('userName') || 'Friend';
+            const userAge = localStorage.getItem('userAge') || '5';
+            const musicGenre = localStorage.getItem('musicGenre') || 'all-songs';
+            
+            // Personalize the welcome message
+            const welcomeMessage = `Welcome back, ${userName}! Let's sing together and have fun! 🌟`;
+            document.querySelector('.subtitle').textContent = welcomeMessage;
+            
+            // Filter songs based on genre preference
+            const filteredSongs = filterSongsByGenre(musicGenre);
+            updateSongSelector(filteredSongs);
+            
+            // Adjust pacing based on age
+            const pacing = getPacingForAge(parseInt(userAge));
+            
+            // Display personalized welcome
+            console.log(`Welcome ${userName} (age ${userAge})! Genre: ${musicGenre}`);
+        }
+
+        function filterSongsByGenre(genre) {
+            const genreMap = {
+                'nursery-rhymes': ['Twinkle, Twinkle, Little Star', 'Baa Baa Black Sheep', 'Mary Had a Little Lamb', 'The Itsy Bitsy Spider'],
+                'action-songs': ['If You\'re Happy and You Know It', 'Head, Shoulders, Knees and Toes'],
+                'counting-songs': ['Five Little Ducks', 'Five Little Monkeys'],
+                'educational-songs': ['The Alphabet Song', 'Head, Shoulders, Knees and Toes'],
+                'animal-songs': ['Old MacDonald Had a Farm', 'Five Little Ducks', 'Five Little Monkeys'],
+                'pop-songs': ['Happy (Kid Version)', 'Can\'t Stop the Feeling (Kid Version)', 'Shake It Off (Kid Version)', 'Shape of You (Kid Version)'],
+                'rnb-songs': ['Uptown Funk (Kid Version)', 'Can\'t Stop the Feeling (Kid Version)', 'Shape of You (Kid Version)'],
+                'hip-hop-songs': ['Uptown Funk (Kid Version)', 'Happy (Kid Version)', 'Shake It Off (Kid Version)'],
+                'afro-music': ['Waka Waka (Kid Version)', 'Happy (Kid Version)', 'Can\'t Stop the Feeling (Kid Version)'],
+                'reggae-songs': ['One Love (Kid Version)', 'Three Little Birds (Kid Version)'],
+                'reggaeton-songs': ['Despacito (Kid Version)', 'Shape of You (Kid Version)'],
+                'all-songs': Object.keys(SONGS)
+            };
+            
+            return genreMap[genre] || Object.keys(SONGS);
+        }
+
+        function updateSongSelector(availableSongs) {
+            const songSelect = document.getElementById('songSelect');
+            songSelect.innerHTML = '';
+            
+            availableSongs.forEach(songTitle => {
+                const option = document.createElement('option');
+                option.value = songTitle;
+                option.textContent = songTitle;
+                songSelect.appendChild(option);
+            });
+        }
+
+        function getPacingForAge(age) {
+            if (age < 5) return 3000; // Slower for very young kids
+            if (age < 8) return 2500; // Medium pace for young kids
+            if (age < 12) return 2000; // Normal pace for older kids
+            return 1500; // Faster for teens and adults
+        }
+
+        // Interactive features
+        let particles = [];
+        let isPlaying = false;
+        let currentSong = null;
+        let currentLineIndex = 0;
+        let cheerInterval = null;
+        let particleInterval = null;
+
+        // Initialize interactive features
+        function initializeInteractivity() {
+            createParticles();
+            addRippleEffects();
+            addClickSounds();
+            addHoverEffects();
+            setupProgressBarInteraction();
+        }
+
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 3 + 's';
+                particle.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Add ripple effect to buttons
+        function addRippleEffects() {
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const ripple = document.createElement('span');
+                    ripple.className = 'ripple';
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    this.appendChild(ripple);
+                    setTimeout(() => ripple.remove(), 600);
+                });
+            });
+        }
+
+        // Add click sound effects
+        function addClickSounds() {
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    playClickSound();
+                    showSuccessAnimation();
+                });
+            });
+        }
+
+        // Play click sound (using Web Audio API)
+        function playClickSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.1);
+            } catch (e) {
+                console.log('Audio not supported');
+            }
+        }
+
+        // Show success animation
+        function showSuccessAnimation() {
+            const successAnim = document.getElementById('successAnimation');
+            successAnim.classList.add('show');
+            setTimeout(() => {
+                successAnim.classList.remove('show');
+            }, 2000);
+        }
+
+        // Add hover effects
+        function addHoverEffects() {
+            const lyricLines = document.querySelectorAll('.lyric-line');
+            lyricLines.forEach(line => {
+                line.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.05)';
+                });
+                line.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        }
+
+        // Setup progress bar interaction
+        function setupProgressBarInteraction() {
+            const progressBar = document.getElementById('progressBar');
+            progressBar.addEventListener('click', function(e) {
+                if (currentSong && isPlaying) {
+                    const rect = this.getBoundingClientRect();
+                    const clickX = e.clientX - rect.left;
+                    const percentage = (clickX / rect.width) * 100;
+                    seekToPercentage(percentage);
+                }
+            });
+        }
+
+        // Seek to specific percentage in song
+        function seekToPercentage(percentage) {
+            if (currentSong && currentSong.lyrics) {
+                const totalLines = currentSong.lyrics.length;
+                const targetLine = Math.floor((percentage / 100) * totalLines);
+                currentLineIndex = Math.max(0, Math.min(targetLine, totalLines - 1));
+                displayLyrics();
+                updateProgressBar();
+            }
+        }
+
+        // Enhanced start singing function
+        function startSinging() {
+            const selectedSong = document.getElementById('songSelect').value;
+            if (!selectedSong) {
+                showMessage('Please select a song first!', 'error');
+                return;
+            }
+
+            currentSong = SONGS[selectedSong];
+            isPlaying = true;
+            currentLineIndex = 0;
+            
+            showLoading(true);
+            
+            setTimeout(() => {
+                showLoading(false);
+                displayLyrics();
+                startLyricProgression();
+                startCheerInterval();
+                showMessage(`🎵 Starting ${selectedSong}! 🎵`, 'success');
+            }, 1000);
+        }
+
+        // Show loading state
+        function showLoading(show) {
+            const loading = document.getElementById('loading');
+            if (show) {
+                loading.classList.add('show');
+            } else {
+                loading.classList.remove('show');
+            }
+        }
+
+        // Enhanced pause function
+        function pauseSinging() {
+            isPlaying = false;
+            if (cheerInterval) {
+                clearInterval(cheerInterval);
+                cheerInterval = null;
+            }
+            showMessage('⏸️ Singing paused!', 'info');
+        }
+
+        // Enhanced stop function
+        function stopSinging() {
+            isPlaying = false;
+            currentLineIndex = 0;
+            if (cheerInterval) {
+                clearInterval(cheerInterval);
+                cheerInterval = null;
+            }
+            displayLyrics();
+            updateProgressBar();
+            showMessage('⏹️ Singing stopped!', 'info');
+        }
+
+        // Enhanced cheer function
+        function giveCheer() {
+            const cheerDisplay = document.getElementById('cheerDisplay');
+            const cheer = CHEERS[Math.floor(Math.random() * CHEERS.length)];
+            
+            cheerDisplay.textContent = cheer;
+            cheerDisplay.classList.add('show');
+            
+            // Add particle burst
+            createParticleBurst();
+            
+            setTimeout(() => {
+                cheerDisplay.classList.remove('show');
+            }, 2000);
+        }
+
+        // Create particle burst effect
+        function createParticleBurst() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 10; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = '50%';
+                particle.style.top = '50%';
+                particle.style.animation = `particleBurst 1s ease-out forwards`;
+                particlesContainer.appendChild(particle);
+                
+                setTimeout(() => particle.remove(), 1000);
+            }
+        }
+
+        // Enhanced lyric progression
+        function startLyricProgression() {
+            if (!isPlaying || !currentSong) return;
+            
+            const totalLines = currentSong.length;
+            const duration = 60; // Default 60 seconds
+            const interval = (duration * 1000) / totalLines;
+            
+            cheerInterval = setInterval(() => {
+                if (isPlaying && currentLineIndex < totalLines - 1) {
+                    currentLineIndex++;
+                    displayLyrics();
+                    updateProgressBar();
+                    
+                    // Add interactive feedback
+                    highlightCurrentLine();
+                    
+                    // Random cheer chance
+                    if (Math.random() < 0.1) {
+                        giveCheer();
+                    }
+                } else if (currentLineIndex >= totalLines - 1) {
+                    stopSinging();
+                    showMessage('🎉 Song completed! Great singing! 🎉', 'success');
+                }
+            }, interval);
+        }
+
+        // Highlight current line with animation
+        function highlightCurrentLine() {
+            const lyricLines = document.querySelectorAll('.lyric-line');
+            lyricLines.forEach((line, index) => {
+                line.classList.remove('current');
+                if (index === currentLineIndex) {
+                    line.classList.add('current');
+                    line.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
+        }
+
+        // Enhanced progress bar update
+        function updateProgressBar() {
+            if (!currentSong) return;
+            
+            const totalLines = currentSong.length;
+            const progress = (currentLineIndex / (totalLines - 1)) * 100;
+            
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            
+            progressFill.style.width = progress + '%';
+            progressText.textContent = Math.round(progress) + '%';
+        }
+
+        // Enhanced message display
+        function showMessage(message, type = 'info') {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = message;
+            messageDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#2ecc71' : type === 'error' ? '#e74c3c' : '#3498db'};
+                color: white;
+                padding: 15px 25px;
+                border-radius: 10px;
+                font-weight: bold;
+                z-index: 1000;
+                animation: slideIn 0.5s ease-out;
+            `;
+            
+            document.body.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.style.animation = 'slideOut 0.5s ease-in';
+                setTimeout(() => messageDiv.remove(), 500);
+            }, 3000);
+        }
+
+        // Enhanced lyrics display
+        function displayLyrics() {
+            const lyricsDisplay = document.getElementById('lyricsDisplay');
+            
+            if (!currentSong) {
+                lyricsDisplay.innerHTML = '<p>Select a song to start singing!</p>';
+                return;
+            }
+            
+            let html = '';
+            currentSong.forEach((line, index) => {
+                const isCurrent = index === currentLineIndex;
+                const className = isCurrent ? 'lyric-line current' : 'lyric-line';
+                html += `<div class="${className}" data-index="${index}">${line}</div>`;
+            });
+            
+            lyricsDisplay.innerHTML = html;
+            addHoverEffects();
+        }
+
+        // Start cheer interval
+        function startCheerInterval() {
+            if (cheerInterval) clearInterval(cheerInterval);
+            
+            cheerInterval = setInterval(() => {
+                if (isPlaying && Math.random() < 0.05) {
+                    giveCheer();
+                }
+            }, 5000);
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            populateSongSelect();
+            initializeInteractivity();
+            
+            // Add event listeners
+            document.getElementById('startBtn').addEventListener('click', startSinging);
+            document.getElementById('pauseBtn').addEventListener('click', pauseSinging);
+            document.getElementById('stopBtn').addEventListener('click', stopSinging);
+            document.getElementById('cheerBtn').addEventListener('click', giveCheer);
+            document.getElementById('backHomeBtn').addEventListener('click', () => {
+                window.location.href = 'happy_voices_home.html';
+            });
+            
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                switch(e.code) {
+                    case 'Space':
+                        e.preventDefault();
+                        if (isPlaying) pauseSinging();
+                        else startSinging();
+                        break;
+                    case 'KeyC':
+                        giveCheer();
+                        break;
+                    case 'Escape':
+                        stopSinging();
+                        break;
+                }
+            });
+        });
+
+        // Add CSS animations for messages
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+            
+            @keyframes particleBurst {
+                0% { 
+                    transform: translate(-50%, -50%) scale(0);
+                    opacity: 1;
+                }
+                100% { 
+                    transform: translate(-50%, -50%) scale(1) translate(
+                        ${Math.random() * 200 - 100}px, 
+                        ${Math.random() * 200 - 100}px
+                    );
+                    opacity: 0;
+                }
+            }
+            
+            @keyframes progressShine {
+                0% { transform: translateX(-100%); }
+                100% { transform: translateX(100%); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html> 

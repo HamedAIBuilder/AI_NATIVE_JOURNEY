@@ -24,7 +24,39 @@ SONGS = {
         "Twinkle, twinkle, little star,",
         "How I wonder what you are!"
     ],
-    # Add more songs here as needed
+    "Row, Row, Row Your Boat": [
+        "Row, row, row your boat,",
+        "Gently down the stream.",
+        "Merrily, merrily, merrily, merrily,",
+        "Life is but a dream.",
+        "",
+        "Row, row, row your boat,",
+        "Gently down the stream.",
+        "If you see a crocodile,",
+        "Don't forget to scream!"
+    ],
+    "Happy (Kid Version)": [
+        "It might seem crazy what I'm about to say,",
+        "Sunshine she's here, you can take a break.",
+        "I'm a hot air balloon that could go to space,",
+        "With the air, like I don't care, baby, by the way.",
+        "",
+        "Because I'm happy!",
+        "Clap along if you feel like a room without a roof.",
+        "Because I'm happy!",
+        "Clap along if you feel like happiness is the truth."
+    ],
+    "Can't Stop the Feeling (Kid Version)": [
+        "I got this feeling inside my bones,",
+        "It goes electric, wavey when I turn it on.",
+        "All through my city, all through my home,",
+        "We're flying up, no ceiling, when we in our zone.",
+        "",
+        "I got that sunshine in my pocket,",
+        "Got that good soul in my feet.",
+        "I feel that hot blood in my body when it drops,",
+        "I can't take my eyes up off it, moving so phenomenally."
+    ]
 }
 
 CHEERS = [
@@ -49,7 +81,7 @@ def load_song_lyrics(song_title=None):
     if song_title is None:
         # Default to the first song in the dictionary
         song_title = list(SONGS.keys())[0]
-    return SONGS[song_title]
+    return SONGS.get(song_title, SONGS[list(SONGS.keys())[0]])
 
 # 2. Happy Cheer Squad!
 def generate_cheer():
@@ -72,16 +104,71 @@ def display_lyrics_with_pacing(lyrics_list, pause_seconds=2):
         print(f"{color}{cheer}{RESET}")
         time.sleep(1.2)
 
-# 4. Orchestrator
+# 4. Show available songs
+def show_song_menu():
+    """
+    Displays the available songs menu.
+    """
+    print("\n🎵 Available Songs:")
+    print("-" * 30)
+    songs_list = list(SONGS.keys())
+    for i, song in enumerate(songs_list, 1):
+        print(f"{i}. {song}")
+    print("0. Exit")
+    print("-" * 30)
+
+# 5. Get user choice
+def get_user_choice():
+    """
+    Gets the user's song choice with validation.
+    """
+    while True:
+        try:
+            choice = int(input("Choose a song (0-{}): ".format(len(SONGS))))
+            if 0 <= choice <= len(SONGS):
+                return choice
+            else:
+                print("Please enter a number between 0 and {}.".format(len(SONGS)))
+        except ValueError:
+            print("Please enter a valid number.")
+
+# 6. Orchestrator
 def main_sing_along_loop():
     """
-    Coordinates the sing-along experience.
+    Coordinates the sing-along experience with song selection.
     """
     print(f"{COLORS[0]}Welcome to 'Happy Voices Sing-Along!' 🎵🎤{RESET}")
     print(f"{COLORS[1]}Let's sing together and have fun!{RESET}\n")
-    lyrics = load_song_lyrics()
-    display_lyrics_with_pacing(lyrics)
-    print(f"\n{COLORS[2]}You finished the song! You're a singing superstar! 🌈🎶{RESET}")
+    
+    while True:
+        show_song_menu()
+        choice = get_user_choice()
+        
+        if choice == 0:
+            print(f"\n{COLORS[2]}Thanks for singing with us! Come back soon! 👋{RESET}")
+            break
+        
+        # Get the selected song
+        song_title = list(SONGS.keys())[choice - 1]
+        lyrics = load_song_lyrics(song_title)
+        
+        print(f"\n{COLORS[3]}🎤 Now singing: {song_title} 🎵{RESET}")
+        print("=" * 50)
+        
+        display_lyrics_with_pacing(lyrics)
+        
+        print(f"\n{COLORS[2]}You finished the song! You're a singing superstar! 🌈🎶{RESET}")
+        
+        # Ask if user wants to continue
+        continue_choice = input("\nWant to sing another song? (y/n): ").lower()
+        if continue_choice not in ['y', 'yes']:
+            print(f"\n{COLORS[2]}Thanks for singing with us! Come back soon! 👋{RESET}")
+            break
 
 if __name__ == "__main__":
-    main_sing_along_loop() 
+    try:
+        main_sing_along_loop()
+    except KeyboardInterrupt:
+        print(f"\n{COLORS[1]}Goodbye! 👋{RESET}")
+    except Exception as e:
+        print(f"\n{COLORS[4]}An error occurred: {e}{RESET}") 
