@@ -1,1 +1,1 @@
-# AI_NATIVE_JOURNEY
+# AI_NATIVE_JOURNEY: This is my AI journey at pursuit.In this journey I will be learning some AI tools that would help me to build vital products which solves real world problems and is meaningful to society.
